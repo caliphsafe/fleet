@@ -4,7 +4,7 @@ A responsive, static-first rebuild of [fleetfisheries.com](https://www.fleetfish
 
 ## Deploy without a terminal
 
-1. Unzip `fleet-fisheries-43-build.zip` on your computer.
+1. Unzip `fleet-fisheries-43-build-modern.zip` on your computer.
 2. Open GitHub Desktop and create a repository from the unzipped project folder. Use **Publish repository** to send it to your GitHub account. The project contains many image files, so the desktop app is convenient for uploading the complete folder together.
 3. In Vercel, choose **Add New → Project**, import that GitHub repository, and deploy it with the **Other** framework preset. Leave the build and install commands blank; the finished HTML pages and assets are already included. Keep the project root as the root directory.
 4. To use the existing domain, add `fleetfisheries.com` (and `www.fleetfisheries.com`, if desired) under the Vercel project's **Settings → Domains** and follow the DNS records Vercel presents.

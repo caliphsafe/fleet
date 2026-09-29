@@ -67,6 +67,8 @@ def image_key(image):
     return image.get("key", "")
 
 def image_remote(image, width=1500):
+    if image.get("remote_src"):
+        return image["remote_src"]
     key = image_key(image)
     if key:
         encoded = quote(key, safe="~._-")
@@ -204,8 +206,8 @@ def page_description(page):
     return page.get("description") or lead_text(page) or f"Fleet Fisheries Inc. — {short_title(page)}."
 
 def header_html(active_slug=""):
-    logo_key="e54456_76784bf0d07a4b919d1e043ec5f5af70~mv2.png"
-    logo={"key":logo_key,"src":"https://static.wixstatic.com/media/"+quote(logo_key,safe="~._-"),"fallback":ASSETS.get(logo_key,{}).get("file", ""),"alt":"Fleet Fisheries Inc."}
+    logo_key="e54456_2aa41b75b37943b1b490bf2466166ca4~mv2_d_4000_1283_s_2.png"
+    logo={"key":logo_key,"src":"https://static.wixstatic.com/media/"+quote(logo_key,safe="~._-"),"remote_src":"https://static.wixstatic.com/media/e54456_2aa41b75b37943b1b490bf2466166ca4~mv2_d_4000_1283_s_2.png/v1/fill/w_524,h_168,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/NEW-Fleet-Fisheries-Logo-White-Horizonta.png","fallback":ASSETS.get(logo_key,{}).get("file", ""),"alt":"Fleet Fisheries Inc."}
     logo_img=image_tag(logo,"brand-logo",loading="eager",width=620)
     groups=[]
     for i,group in enumerate(NAV_GROUPS):
