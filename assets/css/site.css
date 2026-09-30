@@ -238,3 +238,45 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
   .photo-grid:has(> .photo-card:nth-child(3))>.photo-card:last-child:nth-child(2n + 1){grid-column:1/-1;width:100%;justify-self:stretch}
   .photo-grid:has(> .photo-card:nth-child(7)):has(> .photo-card:last-child:nth-child(3n + 1))>.photo-card:last-child{grid-column:1/-1;width:100%;justify-self:stretch}
 }
+
+/* Keep page copy, actions and section titles on a consistent vertical rhythm. */
+.page-content .content-width>.body-copy{margin:0 auto .75rem}
+.page-content .content-width>.content-heading{margin:1.55rem auto .65rem;line-height:1.12}
+.page-content .content-width>.content-list{margin:.45rem auto 1.1rem}
+.page-content .content-width>.inline-cta{display:flex;width:fit-content;max-width:100%;min-height:48px;margin:.25rem auto .85rem;align-items:center;overflow-wrap:anywhere}
+.page-content .content-width>.photo-grid{margin-block:1.25rem 1.65rem}
+
+/* Vessel pages use a compact metadata row and balanced specification columns. */
+main:has(> .vessel-overview)>.page-content{padding-top:clamp(1.5rem,2.6vw,2.25rem)}
+main:has(> .vessel-overview)>.page-content>.content-width{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.65rem,1.4vw,1.15rem);align-items:center}
+main:has(> .vessel-overview)>.page-content>.content-width>:nth-child(n+3){grid-column:1/-1}
+main:has(> .vessel-overview)>.page-content>.content-width>.inline-cta{width:100%;min-height:52px;margin:0;justify-content:flex-start}
+main:has(> .vessel-overview)>.page-content>.content-width>.body-copy{max-width:none;width:100%;margin:0;line-height:1.45}
+main:has(> .vessel-overview)>.page-content>.content-width>.body-copy:not(:first-of-type){padding:.85rem 1rem;border-left:2px solid rgba(166,215,218,.65);background:rgba(14,52,69,.34)}
+main:has(> .vessel-overview)>.page-content>.content-width>.content-heading{max-width:none;width:100%;margin:1rem 0 .5rem}
+main:has(> .vessel-overview)>.page-content>.content-width>.photo-grid{margin:1rem 0 1.6rem}
+main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid){grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,.55fr)}
+main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>:nth-child(n+4){grid-column:1/-1}
+main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.inline-cta:first-child{grid-column:1;grid-row:1}
+main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.body-copy:first-of-type{grid-column:2;grid-row:1;text-align:center;color:#d3e8ed;font-size:.8rem;letter-spacing:.035em}
+main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.content-heading:first-of-type{grid-column:3;grid-row:1;margin:0;text-align:right;font-size:clamp(1.25rem,2.2vw,1.85rem);white-space:nowrap}
+main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}
+main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(9):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(10):last-child){grid-template-columns:repeat(5,minmax(0,1fr))}
+
+@media(max-width:900px){
+  main:has(> .vessel-overview)>.page-content>.content-width,
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid){grid-template-columns:1fr}
+  main:has(> .vessel-overview)>.page-content>.content-width>:nth-child(n+1){grid-column:1/-1}
+  main:has(> .vessel-overview)>.page-content>.content-width>.inline-cta{width:fit-content}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.inline-cta:first-child{width:fit-content}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.body-copy:first-of-type{text-align:left}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.content-heading:first-of-type{text-align:left;white-space:normal}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.inline-cta:first-child{grid-column:1;grid-row:auto}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.body-copy:first-of-type{grid-column:1;grid-row:auto}
+  main:has(> .vessel-overview)>.page-content>.content-width:has(> .body-copy:first-of-type+.content-heading+.photo-grid)>.content-heading:first-of-type{grid-column:1;grid-row:auto}
+  main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(8):last-child),
+  main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(9):last-child),
+  main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(10):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+  main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(9):last-child)>.spec-item:last-child{grid-column:1/-1;width:calc(50% - .5rem);justify-self:center}
+}
