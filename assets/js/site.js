@@ -87,7 +87,7 @@
         return { ...page, score };
       }).filter((page) => page.score).sort((a, b) => b.score - a.score).slice(0, 6);
       searchResults.innerHTML = matches.length
-        ? matches.map((page) => `<a class="search-result" role="option" href="${escapeAttribute(page.path)}"><strong>${escapeHTML(page.title)}</strong><span>${escapeHTML(page.description)}</span></a>`).join('')
+        ? matches.map((page) => `<a class="search-result" href="${escapeAttribute(page.path)}"><strong>${escapeHTML(page.title)}</strong><span>${escapeHTML(page.description)}</span></a>`).join('')
         : '<p class="search-empty">No matching pages. Try a different word.</p>';
     } catch {
       searchResults.innerHTML = '<p class="search-empty">Search is temporarily unavailable.</p>';
@@ -100,6 +100,45 @@
     }
     if (event.key === 'ArrowDown') searchResults?.querySelector('a')?.focus();
   });
+  searchResults?.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    const links = [...searchResults.querySelectorAll('a.search-result')];
+    const current = links.indexOf(document.activeElement);
+    const next = event.key === 'ArrowDown' ? current + 1 : current - 1;
+    event.preventDefault();
+    if (next < 0) searchInput?.focus();
+    else if (next < links.length) links[next].focus();
+  });
+
+  const vesselSearch = document.querySelector('#vessel-search');
+  const vesselFilters = [...document.querySelectorAll('[data-vessel-filter]')];
+  const vesselGroups = [...document.querySelectorAll('[data-vessel-group]')];
+  const vesselCount = document.querySelector('.fleet-result-count');
+  const vesselEmpty = document.querySelector('.fleet-no-results');
+  let vesselFilter = 'all';
+  function filterVessels() {
+    if (!vesselGroups.length) return;
+    const query = (vesselSearch?.value || '').trim().toLowerCase();
+    let shown = 0;
+    vesselGroups.forEach((group) => {
+      let visibleInGroup = 0;
+      group.querySelectorAll('.vessel-card').forEach((card) => {
+        const matches = (!query || card.textContent.toLowerCase().includes(query)) &&
+          (vesselFilter === 'all' || group.dataset.vesselGroup === vesselFilter);
+        card.hidden = !matches;
+        if (matches) { visibleInGroup += 1; shown += 1; }
+      });
+      group.hidden = visibleInGroup === 0;
+    });
+    if (vesselCount) vesselCount.textContent = `Showing ${shown} ${shown === 1 ? 'vessel' : 'vessels'}`;
+    if (vesselEmpty) vesselEmpty.hidden = shown !== 0;
+  }
+  vesselSearch?.addEventListener('input', filterVessels);
+  vesselFilters.forEach((button) => button.addEventListener('click', () => {
+    vesselFilter = button.dataset.vesselFilter || 'all';
+    vesselFilters.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+    filterVessels();
+  }));
   function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
   }
