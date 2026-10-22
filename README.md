@@ -16,8 +16,9 @@ Both forms validate in the browser and have a working Vercel endpoint at `/api/f
 - `RESEND_API_KEY`: API key for a Resend account.
 - `FLEET_FORMS_FROM`: a sender address verified with Resend, for example `Website <website@your-verified-domain>`.
 - `FLEET_FORMS_TO`: optional recipient; defaults to `sales@fleetfisheries.com`.
+- `FLEET_CREW_FORMS_TO`: optional recipient for vessel crew applications; defaults to `FLEET_FORMS_TO` and then `sales@fleetfisheries.com`. Set this to Fleet Management's confirmed inbox when available.
 
-If direct email delivery is not configured, the page clearly reports that the form did not send and provides a prefilled email link addressed to `sales@fleetfisheries.com`. The page never reports an unsent form as delivered. Crew inquiries include the source site's deckhand application fields and are addressed to the same sales inbox for Fleet Management Group LLC.
+If direct email delivery is not configured, the page clearly reports that the form did not send and provides a prefilled email link addressed to `sales@fleetfisheries.com`. The page never reports an unsent form as delivered. Crew inquiries include the source site's deckhand application fields; use `FLEET_CREW_FORMS_TO` to direct them to the confirmed Fleet Management recipient.
 
 ## Images, documents, and source notes
 

@@ -1,5 +1,11 @@
 {
   "trailingSlash": true,
+  "redirects": [
+    { "source": "/from-the-sea", "destination": "/our-products/", "permanent": true },
+    { "source": "/from-the-sea/", "destination": "/our-products/", "permanent": true },
+    { "source": "/list-of-all-fleet-vessels", "destination": "/our-fleet/", "permanent": true },
+    { "source": "/list-of-all-fleet-vessels/", "destination": "/our-fleet/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

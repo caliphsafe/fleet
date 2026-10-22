@@ -53,7 +53,9 @@ module.exports = async function handler(req, res) {
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from,
-        to: process.env.FLEET_FORMS_TO || "sales@fleetfisheries.com",
+        to: isCrew
+          ? (process.env.FLEET_CREW_FORMS_TO || process.env.FLEET_FORMS_TO || "sales@fleetfisheries.com")
+          : (process.env.FLEET_FORMS_TO || "sales@fleetfisheries.com"),
         reply_to: email,
         subject,
         text: lines.join("\n"),

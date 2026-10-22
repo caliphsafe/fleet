@@ -14,6 +14,53 @@
 @media(max-width:560px){body{font-size:15px}.utility-bar{font-size:.65rem}.utility-bar__inner{padding:.45rem .8rem}.utility-bar__actions{gap:.7rem}.utility-bar__actions>span{display:none}.site-header__inner{min-height:68px}.brand,.brand-logo{width:135px;flex-basis:135px}.home-hero{min-height:560px;height:calc(88svh - 68px)}.hero-slide__content{top:47%;width:calc(100% - 2*var(--gutter));padding-bottom:4rem}.hero-slide h1{font-size:clamp(3.4rem,16vw,5.6rem)}.hero-slide__copy{font-size:.95rem}.hero-slide__actions{align-items:flex-start;flex-direction:column;gap:.75rem}.home-hero__controls{gap:.32rem}.home-hero__controls>button{width:34px;height:34px}.hero-dots{gap:.28rem}.hero-dots button{width:7px;height:7px}.hero-scroll{font-size:.58rem}.section{padding:4rem 1.1rem}.section-heading{margin-bottom:2rem}.journey-grid,.vessel-grid,.people-grid,.product-grid,.video-card-grid{grid-template-columns:1fr}.journey-card__photo,.product-card__photo,.vessel-card__photo{height:230px}.product-card__photo{height:245px}.split-feature__image{height:270px}.split-feature h2{font-size:2.55rem}.stats-grid{grid-template-columns:repeat(2,1fr)}.stat-card{padding:1.2rem .5rem}.stat-card:nth-child(3){border-left:0}.stat-card:nth-child(n+3){border-top:1px solid var(--line)}.credit-callout__image{height:66vw;min-height:230px}.credit-callout__copy{padding:2.6rem 1.2rem}.brand-grid{grid-template-columns:repeat(2,1fr)}.brand-mark{height:120px}.breadcrumbs{padding:1rem 1.1rem;font-size:.65rem}.page-hero{height:400px}.page-hero__content{padding:2rem 1.1rem 2.4rem}.page-hero h1{font-size:clamp(2.8rem,13vw,4.6rem)}.page-content{padding:3rem 1.1rem}.body-copy{font-size:.96rem}.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.photo-card figcaption{font-size:.6rem;padding:.4rem}.fleet-intro{align-items:flex-start;flex-direction:column}.vessel-overview{padding:2rem 1.1rem}.vessel-overview__top{align-items:flex-start;flex-direction:column}.vessel-id{border-left:0;border-top:1px solid var(--line);padding:.7rem 0 0}.spec-grid{grid-template-columns:repeat(2,1fr)}.mini-vessel-grid{grid-template-columns:repeat(2,1fr)}.mini-vessel>div{height:95px}.person-card__photo{height:300px}.form-row{grid-template-columns:1fr}.contact-map{height:210px}.form-card{padding:1.25rem}.form-card h2{font-size:2rem}.sitemap-grid{grid-template-columns:1fr}.document-card{align-items:flex-start;flex-direction:column}.product-cta{padding:1.5rem 1rem}.product-cta h2{font-size:2rem}.footer-main{grid-template-columns:1fr 1fr;padding:3rem 1.1rem;gap:1.6rem 1rem}.footer-brand{grid-column:1/-1}.footer-bottom{align-items:flex-start;flex-direction:column;padding:1rem 1.1rem}.lightbox{padding:3.8rem .6rem 1rem}.lightbox__arrow--prev{left:.4rem}.lightbox__arrow--next{right:.4rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
+/* Buyer journeys and vessel directory layout */
+.home-hero--static .home-hero__image,.home-hero--static .home-hero__veil{position:absolute;inset:0}
+.home-hero--static .home-hero__photo{width:100%;height:100%;object-fit:cover;object-position:center 54%;filter:saturate(.8) contrast(1.04)}
+.home-hero--static .home-hero__veil{background:linear-gradient(90deg,rgba(2,17,26,.93),rgba(3,30,44,.68) 49%,rgba(4,28,42,.16)),linear-gradient(0deg,rgba(2,18,27,.72),transparent 46%)}
+.home-hero__content{position:absolute;z-index:2;left:max(var(--gutter),calc((100vw - var(--width))/2 + var(--gutter)));top:50%;transform:translateY(-50%);width:min(760px,78vw);padding:2rem 0 3rem}
+.home-hero__content h1{margin:.55rem 0 1rem;font-family:var(--serif);font-size:clamp(3.2rem,7.6vw,6.6rem);line-height:.98;letter-spacing:-.05em;font-weight:500;color:#f4fafc}
+.home-hero__content h1 em{font-weight:400;color:#b9dbe1}
+.home-hero__content>p:not(.eyebrow){max-width:610px;color:rgba(245,251,253,.9);font-size:clamp(1.03rem,1.6vw,1.25rem);margin:0 0 1.6rem}
+.home-hero--static .button--outline{border-color:rgba(244,250,252,.78);color:#f4fafc}
+.home-hero--static .button--outline:hover{background:#f4fafc;color:#071e2b}
+.hub-page{max-width:var(--width)}
+.hub-intro{max-width:760px;margin:0 auto 2.5rem;text-align:center}
+.hub-intro h2{margin:.35rem 0 .8rem;font:500 clamp(2rem,4vw,3.2rem)/1.1 var(--serif);color:#f4fafc}
+.hub-intro>p:last-child{color:#bfd0d6}
+.hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;align-items:stretch}
+.hub-card{display:flex;flex-direction:column;min-width:0;overflow:hidden;text-decoration:none;background:#0a2b3c;border:1px solid rgba(126,194,211,.22);transition:transform .2s,border-color .2s,box-shadow .2s}
+.hub-card:hover{transform:translateY(-3px);border-color:rgba(255,112,72,.74);box-shadow:0 18px 42px rgba(0,10,17,.28)}
+.hub-card__image{height:190px;overflow:hidden;background:#031923}
+.hub-card__image img{width:100%;height:100%;object-fit:cover}
+.hub-card__copy{flex:1;padding:1.35rem;display:flex;flex-direction:column;align-items:flex-start}
+.hub-card__copy h2{font:600 1.35rem/1.2 var(--sans);margin:.2rem 0 .65rem;color:#f4fafc}
+.hub-card__copy>p:not(.eyebrow){font-size:.9rem;color:#b7cbd3;line-height:1.55;margin:0 0 1rem}
+.hub-card .arrow-link{margin-top:auto;color:#f4fafc}
+.hub-intro+.hub-grid+.stage-copy{margin-top:2rem}
+.fleet-tools{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:.65rem 1.25rem;align-items:end;padding:1.2rem;margin-bottom:2rem;background:#0a2b3c;border:1px solid var(--line)}
+.fleet-tools>label{grid-column:1/-1;font-size:.72rem;text-transform:uppercase;font-weight:800;letter-spacing:.12em;color:#d9e8ed}
+.fleet-tools>input{min-height:46px;padding:.7rem .85rem;color:#f4fafc;background:#061c29;border:1px solid rgba(145,202,214,.38);border-radius:2px}
+.fleet-tools>input::placeholder{color:#9fb5bd}
+.fleet-filters{display:flex;gap:.4rem;flex-wrap:wrap}
+.fleet-filters button{min-height:42px;padding:.6rem .8rem;border:1px solid rgba(145,202,214,.4);background:transparent;color:#dceaf0;font-size:.75rem;cursor:pointer}
+.fleet-filters button[aria-pressed=true],.fleet-filters button:hover{background:var(--coral);border-color:var(--coral);color:#071e2b}
+.fleet-result-count{grid-column:1/-1;margin:0;color:#abc3cc;font-size:.78rem}
+.fleet-no-results{padding:1.5rem;text-align:center;color:#e2edf1}
+.fleet-media-link{margin-top:3rem;padding:2rem;background:linear-gradient(110deg,#0c3548,#071e2b);border-left:3px solid var(--coral)}
+.fleet-media-link h2{margin:.2rem 0 .4rem;font:500 clamp(1.8rem,3vw,2.5rem)/1.1 var(--serif);color:#f4fafc}
+.fleet-media-link p:not(.eyebrow){color:#b7cbd3}
+.gallery-more{margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gallery-more summary{padding:1rem 0;color:#eaf3f6;font-weight:750;cursor:pointer}
+.gallery-more[open] summary{color:var(--aqua)}
+.gallery-more .photo-grid{margin-top:.5rem;padding-bottom:1.25rem}
+.archive-note{max-width:var(--width);margin:0 auto 2rem;padding:1.2rem 1.4rem;background:#0a2b3c;border-left:3px solid var(--coral)}
+.archive-note p:last-child{margin:.2rem 0 0;color:#c0d2d8}
+.company-news-content{max-width:var(--width);margin:auto}
+.vessel-card[hidden],.fleet-category[hidden],[hidden].fleet-no-results{display:none!important}
+@media(max-width:820px){.home-hero__content{left:var(--gutter);width:min(720px,calc(100% - 2*var(--gutter)));padding-bottom:4rem}.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-tools{grid-template-columns:1fr}.fleet-tools>label,.fleet-result-count{grid-column:auto}}
+@media(max-width:560px){.home-hero--static{height:calc(88svh - 68px);min-height:560px}.home-hero__content{top:47%;width:calc(100% - 2*var(--gutter));padding-bottom:4rem}.home-hero__content h1{font-size:clamp(3rem,14vw,5rem)}.home-hero__content .button-row{align-items:stretch;flex-direction:column;gap:.65rem}.hub-grid{grid-template-columns:1fr}.hub-card{display:grid;grid-template-columns:100px 1fr}.hub-card__image{height:100%;min-height:140px}.hub-card__copy{padding:1rem}.hub-card__copy h2{font-size:1.12rem}.hub-card__copy>p:not(.eyebrow){font-size:.8rem}.fleet-filters{display:grid;grid-template-columns:1fr 1fr}.fleet-filters button:first-child{grid-column:1/-1}}
+
 /* Fleet Fisheries marine navigation system */
 :root{--ink:#092431;--deep:#041823;--deep-2:#0b2c3d;--blue:#176d8a;--aqua:#6bd3df;--foam:#12384c;--paper:#e9f2f5;--white:#f4fafc;--sand:#93abb5;--coral:#ff7048;--muted:#a8c0ca;--line:rgba(119,190,207,.23);--shadow:0 24px 70px rgba(0,13,21,.34)}
 html{scrollbar-color:#28647a #061923}

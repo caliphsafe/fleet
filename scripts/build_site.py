@@ -19,31 +19,34 @@ BASE_URL = "https://www.fleetfisheries.com"
 
 NAV_GROUPS = [
     {
-        "label": "From the Sea", "href": "/from-the-sea/", "lead": "Seafood, fleet and stewardship",
+        "label": "Seafood", "href": "/our-products/", "lead": "Wholesale seafood from our fleet",
         "links": [
-            ("Our Fleet", "/our-fleet/"), ("Sea Scallops", "/sea-scallops/"),
-            ("Lobster", "/lobster/"), ("Crab", "/crab/"), ("Wholefish & Fillets", "/fish/"),
-            ("Best Practices", "/best-practices/"), ("Health & Wellness", "/health-wellness/"),
-            ("Sustainability", "/sustainability/"),
+            ("Sea Scallops", "/sea-scallops/"), ("Lobster", "/lobster/"),
+            ("Crab", "/crab/"), ("Wholefish & Fillets", "/fish/"),
         ],
     },
     {
-        "label": "Our Fleet", "href": "/our-fleet/", "lead": "Fishing vessels and crew opportunities",
-        "links": [("See All Vessels", "/our-fleet/"), ("Vessel List", "/list-of-all-fleet-vessels/"), ("Vessel Jobs", "/vessel-jobs/")],
+        "label": "Our Fleet", "href": "/our-fleet/", "lead": "Commercial fishing vessels from New Bedford",
+        "links": [("Scallop vessels", "/our-fleet/#scallop-vessels"), ("Lobster & crab vessels", "/our-fleet/#lobster-crab-vessels"), ("Vessel jobs", "/vessel-jobs/")],
     },
     {
-        "label": "To the Shore", "href": "/to-the-shore/", "lead": "Facilities, quality and traceability",
-        "links": [("Fleet Facilities", "/fleet-facilities/"), ("Certifications", "/certifications/"), ("Quality Assurance", "/quality-assurance/"), ("Traceability", "/traceability/")],
+        "label": "Quality & Sourcing", "href": "/to-the-shore/", "lead": "From the catch through handling and delivery",
+        "links": [("Facilities", "/fleet-facilities/"), ("Quality assurance", "/quality-assurance/"), ("Certifications", "/certifications/"), ("Traceability", "/traceability/"), ("Sustainability", "/sustainability/"), ("Best practices", "/best-practices/")],
     },
     {
-        "label": "To Your Door", "href": "/to-your-door/", "lead": "Products, shipping and customer accounts",
-        "links": [("Our Products", "/our-products/"), ("Shipping", "/shipping/"), ("Credit Application", "/credit-application/"), ("Fisherman's Market", "https://www.fishmanmkt.com/")],
+        "label": "For Buyers", "href": "/to-your-door/", "lead": "Wholesale orders, shipping and account setup",
+        "links": [("Shipping", "/shipping/"), ("Credit application", "/credit-application/"), ("Company directory", "/company-directory/"), ("Fisherman's Market", "https://www.fishmanmkt.com/")],
     },
     {
-        "label": "About", "href": "/our-story/", "lead": "People, company news and contact details",
-        "links": [("Our Story", "/our-story/"), ("Meet Our Team", "/meet-our-team/"), ("Fleet Sales Team", "/sales/"), ("Company Directory", "/company-directory/"), ("Fleet News", "/company-news/"), ("Media Gallery", "/multimedia-gallery/"), ("Contact Us", "/contact-us/")],
+        "label": "About", "href": "/our-story/", "lead": "Our people, history and company updates",
+        "links": [("Our story", "/our-story/"), ("Our team", "/meet-our-team/"), ("News archive", "/company-news/"), ("Photos & videos", "/multimedia-gallery/")],
     },
 ]
+
+ROUTE_ALIASES = {
+    "from-the-sea": "/our-products/",
+    "list-of-all-fleet-vessels": "/our-fleet/",
+}
 
 PDFS = {
     "e54456_17d8a3ed1c324e9a81d117c934ec327f.pdf": "/assets/docs/credit-application.pdf",
@@ -189,6 +192,8 @@ def fragments_html(fragments, fallback_text=""):
 
 def short_title(page):
     slug=page["slug"]
+    route_titles={"our-products":"Seafood", "to-the-shore":"Quality & Sourcing", "to-your-door":"For Buyers", "sales":"Talk to Sales", "company-news":"News Archive"}
+    if slug in route_titles: return route_titles[slug]
     if slug.startswith("fv-"):
         raw=page.get("h1") or page.get("title", "").split(" - ")[0]
         raw=raw.replace("OUR FLEET OF VESSELS", "").strip()
@@ -273,18 +278,18 @@ def header_html(active_slug=""):
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
         <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
           <a class="nav-home" href="/">Home</a>{''.join(groups)}
-          <a class="nav-contact" href="/contact-us/">Contact <span aria-hidden="true">↗</span></a>
-          <div class="nav-search"><label class="sr-only" for="site-search">Search Fleet Fisheries</label><input id="site-search" type="search" placeholder="Search" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" role="listbox" hidden></div></div>
+          <a class="nav-contact" href="/sales/">Talk to Sales <span aria-hidden="true">↗</span></a>
+          <div class="nav-search"><label class="sr-only" for="site-search">Search Fleet Fisheries</label><input id="site-search" type="search" placeholder="Search" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" role="region" aria-label="Search results" hidden></div></div>
         </nav>
       </div></header>'''
 
 def footer_html():
-    quick1=''.join(link_html(label,href,'footer-link') for label,href in [("Our Fleet","/our-fleet/"),("Vessel List","/list-of-all-fleet-vessels/"),("Vessel Jobs","/vessel-jobs/"),("Our Products","/our-products/"),("Shipping","/shipping/")])
-    quick2=''.join(link_html(label,href,'footer-link') for label,href in [("Fleet Facilities","/fleet-facilities/"),("Certifications","/certifications/"),("Quality Assurance","/quality-assurance/"),("Traceability","/traceability/"),("Sustainability","/sustainability/")])
-    quick3=''.join(link_html(label,href,'footer-link') for label,href in [("Our Story","/our-story/"),("Meet Our Team","/meet-our-team/"),("Company Directory","/company-directory/"),("Fleet News","/company-news/"),("Contact Us","/contact-us/"),("Site Map","/site-map/")])
+    quick1=''.join(link_html(label,href,'footer-link') for label,href in [("Seafood","/our-products/"),("Our Fleet","/our-fleet/"),("Vessel Jobs","/vessel-jobs/"),("Talk to Sales","/sales/")])
+    quick2=''.join(link_html(label,href,'footer-link') for label,href in [("Quality & Sourcing","/to-the-shore/"),("Facilities","/fleet-facilities/"),("Certifications","/certifications/"),("Traceability","/traceability/"),("Shipping","/shipping/"),("Credit Application","/credit-application/"),("Vendor Payment Support","/vendor-ach-data-aggregation-tool/")])
+    quick3=''.join(link_html(label,href,'footer-link') for label,href in [("Our Story","/our-story/"),("Our Team","/meet-our-team/"),("Company Directory","/company-directory/"),("News Archive","/company-news/"),("Photos & Videos","/multimedia-gallery/"),("Contact Us","/contact-us/"),("Site Map","/site-map/")])
     socials=[("YouTube","https://www.youtube.com/channel/UCdHBCTiyboBVrBAjgt7dXdg"),("Facebook","https://www.facebook.com/oceansfleet/"),("X","https://twitter.com/fleetfisheries"),("Instagram","https://www.instagram.com/fleetfisheriesinc/")]
     social_html=''.join(link_html(label,href,'social-link') for label,href in socials)
-    return f'''<footer class="site-footer"><div class="footer-main"><div class="footer-brand"><a href="/" class="footer-logo">Fleet Fisheries<span>INC.</span></a><p>From the sea, to the shore, to your door.<br>Sourced by our own fishing fleet.</p><p class="footer-address">20 Blackmer Street<br>New Bedford, MA 02744</p><a class="footer-phone" href="tel:+15089963742">(508) 996-3742</a><a class="footer-email" href="mailto:sales@fleetfisheries.com">sales@fleetfisheries.com</a></div><div class="footer-column"><h2>Seafood & fleet</h2>{quick1}</div><div class="footer-column"><h2>Quality & operations</h2>{quick2}</div><div class="footer-column"><h2>About Fleet</h2>{quick3}</div></div><div class="footer-bottom"><span>Fleet Fisheries Inc. · New Bedford, Massachusetts</span><div class="footer-socials" aria-label="Social media">{social_html}</div><span>© <span data-current-year>2026</span> Fleet Fisheries Inc.</span></div></footer>'''
+    return f'''<footer class="site-footer"><div class="footer-main"><div class="footer-brand"><a href="/" class="footer-logo">Fleet Fisheries<span>INC.</span></a><p>From the sea, to the shore, to your door.<br>Sourced by our own fishing fleet.</p><p class="footer-address">20 Blackmer Street<br>New Bedford, MA 02744</p><a class="footer-phone" href="tel:+15089963742">(508) 996-3742</a><a class="footer-email" href="mailto:sales@fleetfisheries.com">sales@fleetfisheries.com</a></div><div class="footer-column"><h2>Seafood & fleet</h2>{quick1}</div><div class="footer-column"><h2>Quality & buyer resources</h2>{quick2}</div><div class="footer-column"><h2>Company</h2>{quick3}</div></div><div class="footer-bottom"><span>Fleet Fisheries Inc. · New Bedford, Massachusetts</span><div class="footer-socials" aria-label="Social media">{social_html}</div><span>© <span data-current-year>2026</span> Fleet Fisheries Inc.</span></div></footer>'''
 
 def breadcrumbs_html(page):
     if not page.get("slug"): return ""
@@ -296,7 +301,7 @@ def page_hero(page, image=None, class_name="page-hero", lead=None):
     image=image or (meaningful_images(page)[0] if meaningful_images(page) else None)
     media=(f'<div class="page-hero__media">{image_tag(image,"page-hero__image",loading="eager",width=1800)}</div>' if image and image.get("src") else '<div class="page-hero__media page-hero__media--abstract" aria-hidden="true"></div>')
     title_slug=page.get("slug","")
-    group="Our Fleet" if title_slug.startswith("fv-") or title_slug in ("our-fleet","list-of-all-fleet-vessels","vessel-jobs") else "From the Sea" if title_slug in ("from-the-sea","sea-scallops","lobster","crab","fish","best-practices","health-wellness","sustainability") else "To the Shore" if title_slug in ("to-the-shore","certifications","fleet-facilities","quality-assurance","traceability") else "To Your Door" if title_slug in ("to-your-door","our-products","shipping","credit-application") else "Fleet Fisheries"
+    group="Our Fleet" if title_slug.startswith("fv-") or title_slug in ("our-fleet","list-of-all-fleet-vessels","vessel-jobs") else "Seafood" if title_slug in ("from-the-sea","our-products","sea-scallops","lobster","crab","fish","health-wellness") else "Quality & Sourcing" if title_slug in ("to-the-shore","certifications","fleet-facilities","quality-assurance","traceability","best-practices","sustainability") else "For Buyers" if title_slug in ("to-your-door","shipping","credit-application","company-directory","sales") else "Fleet Fisheries"
     return f'''<section class="{esc(class_name)}"><div class="page-hero__shade"></div>{media}<div class="page-hero__content"><p class="eyebrow">{esc(group)} · New Bedford, Massachusetts</p><h1>{esc(title)}</h1>{f'<p class="page-hero__lead">{esc(lead)}</p>' if lead else ''}</div></section>'''
 
 def is_decorative(image):
@@ -425,29 +430,11 @@ def standard_page(page, extra="", hero=None, lead=None, after_intro=""):
     return f'{breadcrumbs_html(page)}{intro}<div class="page-content"><div class="content-width">{after_intro}{extra}{body}</div></div>'
 
 def home_html():
-    home=BY_SLUG.get("")
-    h=home.get("images",[]) if home else []
-    slides=[
-        ("From the Sea", "Fresh seafood from the sea, to the shore, to your door. Sourced by our own fishing fleet.", "/from-the-sea/", h[0] if h else page_image("our-fleet")),
-        ("Our Products", "Fresh, quality seafood direct from the source.", "/our-products/", page_image("our-products")),
-        ("To the Shore", "Our strategically located New Bedford facilities support efficiency and quality.", "/to-the-shore/", page_image("fleet-facilities")),
-        ("Sea Scallops", "Fresh scallops direct from our own fleet.", "/sea-scallops/", page_image("sea-scallops")),
-        ("To Your Door", "From the sea to the shore to your door is what we do best.", "/to-your-door/", page_image("shipping")),
-        ("Live Lobsters & Crabs", "North American lobster and crab.", "/lobster/", page_image("lobster")),
-        ("Fish Department", "Swordfish, tuna, halibut and more.", "/fish/", page_image("fish")),
-        ("New Bedford", "20 Blackmer Street, New Bedford, Massachusetts.", "/contact-us/", page_image("fleet-facilities")),
-        ("Sustainability", "We understand how important it is to keep our industry sustainable for generations to come.", "/sustainability/", page_image("sustainability")),
-    ]
-    slide_html=[]
-    for i,(title,desc,href,img) in enumerate(slides):
-        slide_html.append(f'''<article class="hero-slide{' is-active' if i==0 else ''}" data-slide="{i}" aria-hidden="{'false' if i==0 else 'true'}">
-          <div class="hero-slide__image">{image_tag(img,"hero-slide__photo",loading="eager" if i==0 else "lazy",width=2000)}</div>
-          <div class="hero-slide__veil"></div><div class="hero-slide__content"><p class="eyebrow">Fleet Fisheries Inc. · New Bedford, MA</p><h1>{esc(title)}</h1><p class="hero-slide__copy">{esc(desc)}</p><div class="hero-slide__actions">{link_html("Explore "+title,href,"button button--light")}<a class="hero-phone" href="tel:+15089963742">Call (508) 996-3742</a></div></div>
-        </article>''')
-    dots=''.join(f'<button type="button" data-slide-to="{i}" aria-label="Show {esc(title)} slide" aria-current="{"true" if i==0 else "false"}"></button>' for i,(title,_,__,___) in enumerate(slides))
-    hero=f'''<section class="home-hero" aria-roledescription="carousel" aria-label="Fleet Fisheries introduction"><div class="home-hero__slides">{"".join(slide_html)}</div><div class="home-hero__controls"><button type="button" data-slide-prev aria-label="Previous slide">←</button><div class="hero-dots">{dots}</div><button type="button" data-slide-next aria-label="Next slide">→</button><button type="button" class="hero-pause" data-slide-pause aria-label="Pause slideshow">Ⅱ</button></div><a class="hero-scroll" href="#journey">Scroll to explore <span aria-hidden="true">↓</span></a></section>'''
+    home=BY_SLUG.get(""); h=home.get("images",[]) if home else []
+    image=h[0] if h else page_image("our-fleet")
+    hero=f'''<section class="home-hero home-hero--static"><div class="home-hero__image">{image_tag(image,"home-hero__photo",loading="eager",width=2200)}</div><div class="home-hero__veil"></div><div class="home-hero__content"><p class="eyebrow">Fleet Fisheries Inc. · New Bedford, Massachusetts</p><h1>Seafood from our fleet.<br><em>Handled from source.</em></h1><p>Vertically integrated commercial fishing and wholesale seafood distribution, from the sea to the shore to your door.</p><div class="button-row">{link_html("Explore our seafood","/our-products/","button button--light")}{link_html("Talk to Sales","/sales/","button button--outline")}</div></div><a class="hero-scroll" href="#journey">Explore Fleet Fisheries <span aria-hidden="true">↓</span></a></section>'''
     step_cards=[
-        ("01", "From the sea", "Our own fishing fleet harvests scallops, lobster, crab, and fish.", "/from-the-sea/", page_image("our-fleet")),
+        ("01", "From the sea", "Our own fishing fleet harvests scallops, lobster, crab, and fish.", "/our-products/", page_image("our-fleet")),
         ("02", "To the shore", "Fleet Fisheries’ shore-side facilities are located in historic New Bedford, Massachusetts.", "/to-the-shore/", page_image("fleet-facilities")),
         ("03", "To your door", "Fleet Fisheries works with carriers including DSL, FedEx, American Airlines and others.", "/to-your-door/", page_image("shipping")),
     ]
@@ -509,19 +496,10 @@ def render_fleet():
     for category,anchor in [("Scallop fishing vessels","scallop-vessels"),("Lobster & crab fishing vessels","lobster-crab-vessels")]:
         section=[p for p in vessels if vessel_category(p)==category]
         if not section: continue
-        groups.append(f'<section class="fleet-category fleet-category--directory" id="{anchor}"><div class="fleet-category__heading"><p class="eyebrow">{len(section)} vessels</p><h2>{esc(category)}</h2><p>Open a profile for vessel specifications and photographs.</p></div><div class="vessel-grid">{"".join(render_vessel_card(p) for p in section)}</div></section>')
-    videos=video_cards(page)
-    legacy=[]; after=False
-    for b in page.get("blocks",[]):
-        if b.get("type")=="heading" and "MISCELLANEOUS" in b.get("text",""): after=True
-        elif b.get("type")=="image" and after: legacy.append(b)
-    legacy_html=render_photo_group(legacy,"photo-grid photo-grid--archive")
+        groups.append(f'<section class="fleet-category fleet-category--directory" id="{anchor}" data-vessel-group="{esc(category)}"><div class="fleet-category__heading"><p class="eyebrow">{len(section)} vessels</p><h2>{esc(category)}</h2><p>Open a profile for vessel specifications and photographs.</p></div><div class="vessel-grid">{"".join(render_vessel_card(p) for p in section)}</div></section>')
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
     return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Browse the vessels by fishery, then open a profile to see its specifications and photos.")}
-      <div class="page-content"><div class="content-width fleet-directory">{''.join(groups)}
-        <section class="video-section"><div class="section-heading section-heading--compact"><p class="eyebrow">On the water</p><h2>Fleet Fisheries videos</h2></div><div class="video-card-grid">{videos}</div></section>
-        <section class="archive-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Fleet history</p><h2>From the archives</h2></div>{legacy_html}{link_html('See all vessel profiles','/list-of-all-fleet-vessels/','button button--outline')}</section>
-      </div></div>'''
+      <div class="page-content"><div class="content-width fleet-directory"><div class="fleet-tools"><label for="vessel-search">Find a vessel</label><input id="vessel-search" type="search" placeholder="Search vessel names" autocomplete="off"><div class="fleet-filters" role="group" aria-label="Filter vessels"><button type="button" data-vessel-filter="all" aria-pressed="true">All vessels</button><button type="button" data-vessel-filter="Scallop fishing vessels" aria-pressed="false">Scallop</button><button type="button" data-vessel-filter="Lobster &amp; crab fishing vessels" aria-pressed="false">Lobster &amp; crab</button></div><p class="fleet-result-count" aria-live="polite">Showing {len(vessels)} vessels</p></div>{''.join(groups)}<p class="fleet-no-results" hidden>No vessels match that search.</p><section class="fleet-media-link"><p class="eyebrow">Fleet Fisheries media</p><h2>See the fleet at work.</h2><p>Explore videos and photographs from the Fleet Fisheries archive.</p>{link_html('Open photos & videos','/multimedia-gallery/','button button--outline')}</section></div></div>'''
 
 def vessel_category(page, subtitle="", spec=None):
     spec=spec or {}
@@ -601,10 +579,10 @@ def render_vessel(page):
     identity=f'<div class="vessel-profile-hero__number"><span>Vessel number</span><strong>{esc(registry)}</strong></div>' if registry else ""
     spec_html=''.join(f'<div class="vessel-spec-item"><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k,v in spec.items())
     gallery=render_image_grid(images[1:],"photo-grid photo-grid--vessel-profile")
-    return f'''{breadcrumbs_html(page)}<section class="vessel-profile-hero">{hero_html}<div class="vessel-profile-hero__shade"></div><div class="vessel-profile-hero__content"><p class="eyebrow">{esc(category)}</p><h1>{esc(title)}</h1><p class="vessel-profile-hero__lead">{esc(label)}</p>{identity}{link_html("View all vessels","/list-of-all-fleet-vessels/","button button--light")}</div></section>
+    return f'''{breadcrumbs_html(page)}<section class="vessel-profile-hero">{hero_html}<div class="vessel-profile-hero__shade"></div><div class="vessel-profile-hero__content"><p class="eyebrow">{esc(category)}</p><h1>{esc(title)}</h1><p class="vessel-profile-hero__lead">{esc(label)}</p>{identity}{link_html("View all vessels","/our-fleet/","button button--light")}</div></section>
       <section class="vessel-specs-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">Fleet vessel profile</p><h2>Vessel specifications</h2></div>{f'<dl class="vessel-spec-grid">{spec_html}</dl>' if spec_html else '<p>Vessel specifications are not available on the public source page.</p>'}</div></section>
       {f'<section class="vessel-gallery-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">On the water</p><h2>{esc(title)} photographs</h2></div>{gallery}</div></section>' if gallery else ''}
-      <section class="vessel-profile-footer"><div class="content-width"><p class="eyebrow">Fleet Fisheries Inc.</p><h2>Explore the full fishing fleet.</h2>{link_html("Browse all vessel profiles","/list-of-all-fleet-vessels/","button button--light")}</div></section>'''
+      <section class="vessel-profile-footer"><div class="content-width"><p class="eyebrow">Fleet Fisheries Inc.</p><h2>Explore the full fishing fleet.</h2>{link_html("Browse all vessel profiles","/our-fleet/","button button--light")}</div></section>'''
 
 def render_all_vessels():
     page=BY_SLUG["list-of-all-fleet-vessels"]
@@ -732,32 +710,32 @@ def render_gallery(page):
     grid=render_photo_group(images[1:] if images and images[0]==hero else images,"photo-grid photo-grid--gallery")
     return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=lead_text(page))}<div class="page-content"><div class="content-width"><section class="video-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Fleet Fisheries on YouTube</p><h2>Videos from the fleet</h2><p>Watch Fleet Fisheries videos and vessel features.</p></div><div class="video-card-grid">{vids or '<p>Visit the Fleet Fisheries YouTube channel for videos.</p>'}</div><a class="button button--dark" href="https://www.youtube.com/@fleetfisheriesinc" target="_blank" rel="noopener noreferrer">Visit our YouTube channel</a></section><section class="archive-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Photos</p><h2>Fleet Fisheries photo gallery</h2></div>{grid}</section></div></div>'''
 
+def render_company_news(page):
+    hero=meaningful_images(page)[0] if meaningful_images(page) else None
+    body=render_blocks(page,skip_hero=hero)
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Company news and stories from the Fleet Fisheries archive.")}<div class="page-content"><div class="content-width"><aside class="archive-note"><p class="eyebrow">Company archive</p><p>This page contains past company news and features. Dates and event timing are presented where included in the original article text.</p></aside><div class="company-news-content">{body}</div></div></div>'''
+
 def render_stage(page):
     slug=page["slug"]
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
-    title=short_title(page)
-    blocks=page.get("blocks",[])
+    if slug=="to-the-shore":
+        title="Quality & Sourcing"; lead="See how Fleet Fisheries handles seafood from catch through processing, traceability and delivery."
+        links=[("Fleet facilities","fleet-facilities"),("Quality assurance","quality-assurance"),("Certifications","certifications"),("Traceability","traceability"),("Sustainability","sustainability"),("Best practices","best-practices")]
+        kicker="Catch to customer"; intro="Fleet Fisheries connects its commercial fishing fleet with New Bedford shore operations and quality practices. Explore the facilities, standards and information behind that work."
+    else:
+        title="For Buyers"; lead="Wholesale seafood, shipping information and account resources from Fleet Fisheries."
+        links=[("Explore seafood","our-products"),("Talk to Sales","sales"),("Shipping","shipping"),("Credit application","credit-application"),("Company directory","company-directory"),("Contact Fleet Fisheries","contact-us")]
+        kicker="Wholesale buyer resources"; intro="Browse seafood, speak with the sales team about products and availability, then review shipping and account resources."
+    title_html=esc(title)
     cards=[]
-    for i,b in enumerate(blocks):
-        if b.get("type")!="link" or not b.get("href","").startswith("/"): continue
-        if b.get("href").strip("/") in ("from-the-sea","to-the-shore","to-your-door"): continue
-        text=b.get("text","")
-        if text.upper() in ("WATCH VIDEO","APPLY NOW"): continue
-        img=None; copy=""
-        for previous in reversed(blocks[max(0,i-5):i]):
-            if previous.get("type")=="image" and not is_decorative(previous): img=previous; break
-        for following in blocks[i+1:i+4]:
-            if following.get("type")=="paragraph": copy=following.get("text",""); break
-        if not copy:
-            target=b.get("href","").strip("/")
-            copy=lead_text(BY_SLUG[target]) if target in BY_SLUG else ""
-        if not img:
-            target=b.get("href","").strip("/")
-            img=page_image(target) if target in BY_SLUG else page_image(slug)
-        if not any(c["href"]==b["href"] for c in cards): cards.append({"title":text,"href":b["href"],"image":img,"copy":copy})
-    card_html=''.join(f'<a class="journey-card" href="{esc(c["href"])}"><div class="journey-card__photo">{image_tag(c["image"],"",loading="lazy",width=1000)}</div><div class="journey-card__copy"><span class="eyebrow">{esc(title)}</span><h3>{esc(c["title"].title())}</h3><p>{esc(c["copy"])}</p><span class="arrow-link">Explore <span aria-hidden="true">↗</span></span></div></a>' for c in cards)
+    for label,target in links:
+        target_page=BY_SLUG.get(target,{})
+        text=lead_text(target_page) if target_page else ""
+        img=page_image(target) if target in BY_SLUG and meaningful_images(BY_SLUG[target]) else None
+        photo=f'<div class="hub-card__image">{image_tag(img,"",loading="lazy",width=900)}</div>' if img else ''
+        cards.append(f'<a class="hub-card" href="/{target}/">{photo}<div class="hub-card__copy"><p class="eyebrow">{esc(kicker)}</p><h2>{esc(label)}</h2><p>{esc(text)}</p><span class="arrow-link">Explore <span aria-hidden="true">↗</span></span></div></a>')
     body=render_blocks(page,skip_hero=hero)
-    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=lead_text(page))}<div class="page-content"><div class="content-width">{f'<div class="journey-grid">{card_html}</div>' if cards else ''}<div class="stage-copy">{body}</div></div></div>'''
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=lead)}<div class="page-content"><div class="content-width hub-page"><section class="hub-intro"><p class="eyebrow">{esc(kicker)}</p><h2>{title_html}</h2><p>{esc(intro)}</p></section><div class="hub-grid">{"".join(cards)}</div><div class="stage-copy">{body}</div></div></div>'''
 
 def render_site_map(page):
     groups=[]
@@ -770,7 +748,7 @@ def render_site_map(page):
         groups.append(f'<section class="sitemap-group"><h2>{esc(group["label"])}</h2><div>{"".join(unique)}</div></section>')
     vessels=[p for p in PAGES if p["slug"].startswith("fv-")]
     vessel_links=''.join(link_html(short_title(p),p["path"],"sitemap-link") for p in vessels)
-    other=[p for p in PAGES if p["slug"] and not p["slug"].startswith("fv-") and p["slug"] not in {x[1].strip("/") for g in NAV_GROUPS for x in [(g["label"],g["href"])] + g["links"]}]
+    other=[p for p in PAGES if p["slug"] and p["slug"] not in ROUTE_ALIASES and not p["slug"].startswith("fv-") and p["slug"] not in {x[1].split("#",1)[0].strip("/") for g in NAV_GROUPS for x in [(g["label"],g["href"])] + g["links"]}]
     other_links=''.join(link_html(short_title(p),p["path"],"sitemap-link") for p in other)
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
     return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Browse Fleet Fisheries pages.")}<div class="page-content"><div class="content-width"><div class="sitemap-grid">{"".join(groups)}<section class="sitemap-group"><h2>Vessel profiles</h2><div>{vessel_links}</div></section><section class="sitemap-group"><h2>More pages</h2><div>{other_links}</div></section></div></div></div>'''
@@ -778,7 +756,7 @@ def render_site_map(page):
 def page_body(page):
     slug=page["slug"]
     if slug=="": return home_html()
-    if slug=="from-the-sea": return render_from_the_sea(page)
+    if slug in ROUTE_ALIASES: return f'<section class="page-content"><div class="content-width"><h1>Page moved</h1><p>This page has moved. <a href="{esc(ROUTE_ALIASES[slug])}">Continue to {esc(short_title(BY_SLUG[ROUTE_ALIASES[slug].strip("/")]))}</a>.</p></div></section>'
     if slug=="our-fleet": return render_fleet()
     if slug=="list-of-all-fleet-vessels": return render_all_vessels()
     if slug.startswith("fv-"): return render_vessel(page)
@@ -790,8 +768,9 @@ def page_body(page):
     if slug=="certifications": return render_certifications(page)
     if slug=="company-directory": return render_directory(page)
     if slug=="multimedia-gallery": return render_gallery(page)
+    if slug=="company-news": return render_company_news(page)
     if slug=="site-map": return render_site_map(page)
-    if slug in ("from-the-sea","to-the-shore","to-your-door"): return render_stage(page)
+    if slug in ("to-the-shore","to-your-door"): return render_stage(page)
     if slug=="vendor-ach-data-aggregation-tool":
         return f'''{breadcrumbs_html(page)}{page_hero(page,None,lead="Vendor ACH Data Aggregation Tool")}<div class="page-content"><div class="content-width empty-page"><p class="eyebrow">Vendor information</p><h2>No public instructions are published here.</h2><p>For questions about vendor payments, contact Fleet Fisheries at <a href="mailto:info@fleetfisheries.com">info@fleetfisheries.com</a> or call <a href="tel:+15089963742">(508) 996-3742</a>.</p></div></div>'''
     if slug=="our-products":
@@ -806,8 +785,7 @@ def render_products_page(page):
         cards.append(f'<a class="market-card" href="/{slug}/"><div class="market-card__photo">{image_tag(im,"",loading="lazy",width=1100)}</div><div class="market-card__body"><span class="eyebrow">{esc(label)}</span><h2>{esc(title)}</h2><p>{esc(copy)}</p><span class="arrow-link">View seafood details <span aria-hidden="true">↗</span></span></div></a>')
     exact_intro=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="paragraph" and "your #1 source" in b.get("text","").lower()),"")
     source_tagline=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="paragraph" and "fresh, quality seafood" in b.get("text","").lower()),"Fresh, quality seafood direct from the source.")
-    callout_heading=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="heading" and "Begin Your Journey" in b.get("text","")),"Begin Your Journey with Fleet Fisheries Today...")
-    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=source_tagline)}<div class="page-content"><div class="content-width market-index"><div class="market-index__intro"><p>{esc(exact_intro)}</p></div><div class="market-grid">{"".join(cards)}</div><section class="market-quality"><div><p class="eyebrow">Quality &amp; handling</p><h2>Seafood backed by our own fleet and shore operations.</h2><p>Learn about Fleet Fisheries' quality assurance, traceability, facilities and shipping.</p></div><div class="market-quality__links">{link_html("Quality assurance","/quality-assurance/","text-link")}{link_html("Traceability","/traceability/","text-link")}{link_html("Fleet facilities","/fleet-facilities/","text-link")}{link_html("Shipping","/shipping/","text-link")}</div></section><section class="product-cta"><p class="eyebrow">Wholesale seafood</p><h2>Talk with a Fleet Fisheries sales associate.</h2><p>Contact one of our sales associates to discuss products and wholesale orders.</p><div class="button-row">{link_html("Contact the sales team","/sales/","button button--dark")}<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a></div></section><section class="credit-callout credit-callout--compact"><div class="credit-callout__copy"><p class="eyebrow">Wholesale accounts</p><h2>{esc(callout_heading)}</h2><p>Credit application</p>{link_html("Apply now","/credit-application/","button button--light")}</div></section></div></div>'''
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=source_tagline)}<div class="page-content"><div class="content-width market-index">{f'<div class="market-index__intro"><p>{esc(exact_intro)}</p></div>' if exact_intro else ''}<div class="market-grid">{"".join(cards)}</div><section class="market-quality"><div><p class="eyebrow">Quality &amp; handling</p><h2>Seafood backed by our own fleet and shore operations.</h2><p>Learn about Fleet Fisheries' quality assurance, traceability, facilities and shipping.</p></div><div class="market-quality__links">{link_html("Quality assurance","/quality-assurance/","text-link")}{link_html("Traceability","/traceability/","text-link")}{link_html("Fleet facilities","/fleet-facilities/","text-link")}{link_html("Shipping","/shipping/","text-link")}</div></section><section class="product-cta"><p class="eyebrow">Wholesale seafood</p><h2>Talk with a Fleet Fisheries sales associate.</h2><p>Contact one of our sales associates to discuss products and wholesale orders.</p><div class="button-row">{link_html("Contact the sales team","/sales/","button button--dark")}<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a></div></section></div></div>'''
 
 def seafood_hero_image(page):
     slug=page["slug"]
@@ -834,7 +812,10 @@ def render_seafood_page(page):
     copy=SEAFOOD_PAGE_COPY[slug]
     hero=seafood_hero_image(page)
     lead=lead_text(page)
-    gallery=render_image_grid(seafood_gallery(slug,hero),"photo-grid photo-grid--seafood")
+    gallery_images=seafood_gallery(slug,hero)
+    gallery=render_image_grid(gallery_images[:8],"photo-grid photo-grid--seafood")
+    if len(gallery_images)>8:
+        gallery+=f'<details class="gallery-more"><summary>View all {len(gallery_images)} {esc(short_title(page).lower())} photos</summary>{render_image_grid(gallery_images[8:],"photo-grid photo-grid--seafood")}</details>'
     exact_scallop_line=""
     call_heading=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="heading" and "Call us today" in b.get("text","").lower()),"")
     if call_heading: exact_scallop_line=f'<p class="seafood-hero__note">{esc(call_heading)}</p>'
@@ -852,7 +833,7 @@ def render_seafood_page(page):
       <section class="seafood-gallery-section"><div class="content-width"><div class="seafood-section-heading"><p class="eyebrow">Fleet Fisheries · New Bedford, Massachusetts</p><h2>{esc(short_title(page))} from every angle.</h2><p>Product photographs from Fleet Fisheries.</p></div>{gallery}</div></section>
       <section class="seafood-switcher"><div class="content-width"><div><p class="eyebrow">Our products</p><h2>Explore more seafood.</h2></div><nav class="seafood-switcher__links" aria-label="More seafood products">{"".join(product_links)}</nav></div></section>
       <section class="seafood-wholesale"><div class="content-width"><div><p class="eyebrow">Wholesale seafood</p><h2>Ask about current products and availability.</h2><p>Speak with the Fleet Fisheries sales team about product details and wholesale orders.</p></div><div class="button-row">{link_html("Contact sales","/sales/","button button--light")}<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a></div></div></section>
-      <section class="credit-callout credit-callout--compact"><div class="credit-callout__copy"><p class="eyebrow">Wholesale accounts</p><h2>{esc(credit_heading)}</h2><p>Credit application</p>{link_html("Apply now","/credit-application/","button button--light")}</div></section>'''
+      '''
 
 def render_from_the_sea(page):
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
@@ -866,9 +847,11 @@ def render_from_the_sea(page):
     return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Explore seafood sourced by Fleet Fisheries and the fishing fleet behind it.")}<div class="page-content"><div class="content-width market-index"><div class="market-index__heading"><p class="eyebrow">From the sea</p><h2>Choose your seafood.</h2><p>Open a product page for its photos, sourcing information and quality details.</p></div><div class="market-grid">{"".join(cards)}</div><section class="seafood-switcher seafood-switcher--landing"><div><p class="eyebrow">More from the sea</p><h2>Fleet, stewardship and best practices.</h2></div><nav class="seafood-switcher__links" aria-label="More from the sea">{"".join(stewardship)}</nav></section></div></div>'''
 
 def html_page(page):
-    title=page.get("title") or short_title(page)
+    title=("Fleet Fisheries | Commercial Fishing & Wholesale Seafood" if not page.get("slug") else f"{short_title(page)} | Fleet Fisheries Inc.")
     description=page_description(page)[:300]
     canonical=BASE_URL+page.get("path","/")
+    if page.get("slug") in ROUTE_ALIASES: canonical=BASE_URL+ROUTE_ALIASES[page["slug"]]
+    robots_meta='<meta name="robots" content="noindex,follow">' if page.get("slug") in ROUTE_ALIASES else ''
     lead_image=meaningful_images(page)[0] if meaningful_images(page) else page_image("our-fleet")
     og=image_remote(lead_image,width=1200) if lead_image else ""
     schema={"@context":"https://schema.org","@graph":[
@@ -877,7 +860,7 @@ def html_page(page):
     ]}
     body=page_body(page)
     return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0c2733"><title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical)}"><meta property="og:type" content="website"><meta property="og:site_name" content="Fleet Fisheries Inc."><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="{esc(og)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{esc(og)}"><link rel="icon" href="/assets/images/asset-0209.webp" type="image/webp"><link rel="stylesheet" href="/assets/css/site.css"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False)}</script><script defer src="/assets/js/site.js"></script></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0c2733"><title>{esc(title)}</title><meta name="description" content="{esc(description)}">{robots_meta}<link rel="canonical" href="{esc(canonical)}"><meta property="og:type" content="website"><meta property="og:site_name" content="Fleet Fisheries Inc."><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="{esc(og)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{esc(og)}"><link rel="icon" href="/assets/images/asset-0209.webp" type="image/webp"><link rel="stylesheet" href="/assets/css/site.css"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False)}</script><script defer src="/assets/js/site.js"></script></head>
 <body data-page="{esc(page.get('slug',''))}">{header_html(page.get('slug',''))}<main id="main">{body}</main>{footer_html()}<dialog class="lightbox" data-lightbox-dialog aria-label="Image viewer"><button type="button" data-lightbox-close class="lightbox__close" aria-label="Close image">×</button><button type="button" data-lightbox-prev class="lightbox__arrow lightbox__arrow--prev" aria-label="Previous image">‹</button><figure><img data-lightbox-image alt=""><figcaption data-lightbox-caption></figcaption></figure><button type="button" data-lightbox-next class="lightbox__arrow lightbox__arrow--next" aria-label="Next image">›</button></dialog></body></html>'''
 
 def generate():
@@ -886,10 +869,11 @@ def generate():
         dest=ROOT if not p["slug"] else ROOT/p["slug"]
         dest.mkdir(parents=True,exist_ok=True)
         (dest/"index.html").write_text(html_page(p),encoding="utf-8")
-    search=[{"title":short_title(p),"path":p["path"],"description":page_description(p),"text":p.get("search_text","")} for p in PAGES]
+    search=[{"title":short_title(p),"path":p["path"],"description":page_description(p),"text":p.get("search_text","")} for p in PAGES if p.get("slug") not in ROUTE_ALIASES]
     (ROOT/"assets/data/search-index.json").write_text(json.dumps(search,ensure_ascii=False),encoding="utf-8")
     urls=[]
     for p in PAGES:
+        if p.get("slug") in ROUTE_ALIASES: continue
         urls.append(f'<url><loc>{esc(BASE_URL+p["path"])}</loc><changefreq>monthly</changefreq></url>')
     sitemap='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(urls)+'</urlset>'
     (ROOT/"sitemap.xml").write_text(sitemap,encoding="utf-8")
