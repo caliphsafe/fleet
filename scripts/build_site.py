@@ -299,6 +299,10 @@ def breadcrumbs_html(page):
 def page_hero(page, image=None, class_name="page-hero", lead=None):
     title=short_title(page)
     image=image or (meaningful_images(page)[0] if meaningful_images(page) else None)
+    if page.get("slug")=="meet-our-team":
+        image={"src":"/assets/images/asset-0416.webp","fallback":"","key":"","alt":"Fleet Fisheries team at work"}
+    elif page.get("slug")=="quality-assurance":
+        image=page_image("quality-assurance",contains="scallops-in-blue-gloved-hands") or image
     media=(f'<div class="page-hero__media">{image_tag(image,"page-hero__image",loading="eager",width=1800)}</div>' if image and image.get("src") else '<div class="page-hero__media page-hero__media--abstract" aria-hidden="true"></div>')
     title_slug=page.get("slug","")
     group="Our Fleet" if title_slug.startswith("fv-") or title_slug in ("our-fleet","list-of-all-fleet-vessels","vessel-jobs") else "Seafood" if title_slug in ("from-the-sea","our-products","sea-scallops","lobster","crab","fish","health-wellness") else "Quality & Sourcing" if title_slug in ("to-the-shore","certifications","fleet-facilities","quality-assurance","traceability","best-practices","sustainability") else "For Buyers" if title_slug in ("to-your-door","shipping","credit-application","company-directory","sales") else "Fleet Fisheries"
@@ -429,11 +433,11 @@ def render_blocks(page, skip_hero=None, skip_lead=True, skip_first_heading=True,
         output.append(f'<details class="gallery-more"><summary>View {len(overflow_images)} more photos</summary>{render_photo_group(overflow_images)}</details>')
     return ''.join(output)
 
-def standard_page(page, extra="", hero=None, lead=None, after_intro=""):
+def standard_page(page, extra="", hero=None, lead=None, after_intro="", image_limit=6):
     hero=hero or (meaningful_images(page)[0] if meaningful_images(page) else None)
     lead=lead if lead is not None else lead_text(page)
     intro=page_hero(page,hero,lead=lead)
-    body=render_blocks(page,skip_hero=hero)
+    body=render_blocks(page,skip_hero=hero,image_limit=image_limit)
     return f'{breadcrumbs_html(page)}{intro}<div class="page-content"><div class="content-width">{after_intro}{extra}{body}</div></div>'
 
 def home_html():
@@ -701,7 +705,7 @@ def render_credit(page):
 
 def render_certifications(page):
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
-    body=render_blocks(page,skip_hero=hero)
+    body=render_blocks(page,skip_hero=hero,image_limit=2)
     documents='''<section class="documents-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Documents</p><h2>Certificates &amp; scope</h2></div><div class="document-grid"><a class="document-card" href="/assets/docs/certification-scope-1.pdf" target="_blank"><span class="document-card__type">PDF</span><strong>HACCP Certificate of Compliance</strong><span>View certificate ↗</span></a><a class="document-card" href="/assets/docs/certification-scope-2.pdf" target="_blank"><span class="document-card__type">PDF</span><strong>MSC Scope &amp; Certification</strong><span>View scope ↗</span></a></div></section>'''
     return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=lead_text(page))}<div class="page-content"><div class="content-width">{documents}{body}</div></div>'''
 
@@ -783,7 +787,8 @@ def page_body(page):
         return f'''{breadcrumbs_html(page)}{page_hero(page,None,lead="Vendor ACH Data Aggregation Tool")}<div class="page-content"><div class="content-width empty-page"><p class="eyebrow">Vendor information</p><h2>No public instructions are published here.</h2><p>For questions about vendor payments, contact Fleet Fisheries at <a href="mailto:info@fleetfisheries.com">info@fleetfisheries.com</a> or call <a href="tel:+15089963742">(508) 996-3742</a>.</p></div></div>'''
     if slug=="our-products":
         return render_products_page(page)
-    return standard_page(page)
+    image_limit={"quality-assurance":2,"shipping":4,"fleet-facilities":4,"health-wellness":3,"traceability":3,"best-practices":4,"sustainability":3,"our-story":4}.get(slug,6)
+    return standard_page(page,image_limit=image_limit)
 
 def render_products_page(page):
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
@@ -868,7 +873,7 @@ def html_page(page):
     ]}
     body=page_body(page)
     return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0c2733"><title>{esc(title)}</title><meta name="description" content="{esc(description)}">{robots_meta}<link rel="canonical" href="{esc(canonical)}"><meta property="og:type" content="website"><meta property="og:site_name" content="Fleet Fisheries Inc."><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="{esc(og)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{esc(og)}"><link rel="icon" href="/assets/images/asset-0209.webp" type="image/webp"><link rel="stylesheet" href="/assets/css/site.css"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False)}</script><script defer src="/assets/js/site.js"></script></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0c2733"><title>{esc(title)}</title><meta name="description" content="{esc(description)}">{robots_meta}<link rel="canonical" href="{esc(canonical)}"><meta property="og:type" content="website"><meta property="og:site_name" content="Fleet Fisheries Inc."><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:image" content="{esc(og)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{esc(og)}"><link rel="icon" href="/assets/images/asset-0209.webp" type="image/webp"><link rel="stylesheet" href="/assets/css/site.css?v=ux-20261022"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False)}</script><script defer src="/assets/js/site.js?v=ux-20261022"></script></head>
 <body data-page="{esc(page.get('slug',''))}">{header_html(page.get('slug',''))}<main id="main">{body}</main>{footer_html()}<dialog class="lightbox" data-lightbox-dialog aria-label="Image viewer"><button type="button" data-lightbox-close class="lightbox__close" aria-label="Close image">×</button><button type="button" data-lightbox-prev class="lightbox__arrow lightbox__arrow--prev" aria-label="Previous image">‹</button><figure><img data-lightbox-image alt=""><figcaption data-lightbox-caption></figcaption></figure><button type="button" data-lightbox-next class="lightbox__arrow lightbox__arrow--next" aria-label="Next image">›</button></dialog></body></html>'''
 
 def generate():
@@ -886,7 +891,7 @@ def generate():
     sitemap='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(urls)+'</urlset>'
     (ROOT/"sitemap.xml").write_text(sitemap,encoding="utf-8")
     (ROOT/"robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: https://www.fleetfisheries.com/sitemap.xml\n",encoding="utf-8")
-    (ROOT/"404.html").write_text(f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found | Fleet Fisheries</title><link rel="stylesheet" href="/assets/css/site.css"></head><body>{header_html()}<main class="not-found"><p class="eyebrow">404 · Fleet Fisheries</p><h1>We can’t find that page.</h1><p>Return to the home page or browse the site map.</p><a class="button button--dark" href="/">Fleet Fisheries home</a> {link_html("Site map","/site-map/","text-link")}</main>{footer_html()}</body></html>''',encoding="utf-8")
+    (ROOT/"404.html").write_text(f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found | Fleet Fisheries</title><link rel="stylesheet" href="/assets/css/site.css?v=ux-20261022"></head><body>{header_html()}<main class="not-found"><p class="eyebrow">404 · Fleet Fisheries</p><h1>We can’t find that page.</h1><p>Return to the home page or browse the site map.</p><a class="button button--dark" href="/">Fleet Fisheries home</a> {link_html("Site map","/site-map/","text-link")}</main>{footer_html()}</body></html>''',encoding="utf-8")
     print(f"Rendered {len(PAGES)} static routes into {ROOT}")
 
 if __name__=="__main__": generate()
