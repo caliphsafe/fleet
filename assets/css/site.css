@@ -280,3 +280,160 @@ main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(10):last-chil
   main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(10):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
   main:has(> .vessel-overview) .spec-grid:has(> .spec-item:nth-child(9):last-child)>.spec-item:last-child{grid-column:1/-1;width:calc(50% - .5rem);justify-self:center}
 }
+
+/* Seafood market pages: one focused product story, one focused gallery. */
+.seafood-hero{min-height:clamp(480px,58vw,700px);position:relative;display:flex;align-items:flex-end;overflow:hidden;background:#041923;color:#fff}
+.seafood-hero__media,.seafood-hero__shade{position:absolute;inset:0}
+.seafood-hero__image{width:100%;height:100%;object-fit:cover;object-position:center 52%}
+.seafood-hero__shade{background:linear-gradient(90deg,rgba(2,17,25,.9),rgba(2,17,25,.62) 45%,rgba(2,17,25,.08) 100%),linear-gradient(0deg,rgba(2,17,25,.78),transparent 68%)}
+.seafood-hero__content{position:relative;z-index:1;width:min(var(--width),100%);margin:0 auto;padding:clamp(2.5rem,6vw,5rem) var(--gutter)}
+.seafood-hero__content .eyebrow{color:#b9e1e5}
+.seafood-hero h1{max-width:850px;margin:.45rem 0 .9rem;font-family:var(--serif);font-size:clamp(3.8rem,9vw,8rem);font-weight:500;line-height:.92;letter-spacing:-.055em}
+.seafood-hero__lead{max-width:680px;margin:0 0 1rem;color:rgba(255,255,255,.9);font-size:clamp(1rem,1.6vw,1.3rem);line-height:1.55}
+.seafood-hero__note{margin:.8rem 0 1.15rem;font-family:var(--serif);font-size:1.15rem;color:#d8eeee}
+.seafood-story{padding:clamp(3.75rem,7vw,6.5rem) var(--gutter);background:#f4f1e7;color:#172c34}
+.seafood-story__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr);gap:clamp(2rem,7vw,7rem);align-items:center}
+.seafood-story__copy{max-width:720px}
+.seafood-story__copy h2,.seafood-section-heading h2,.market-index__heading h2,.fleet-category__heading h2,.vessel-section-heading h2{margin:.4rem 0 1rem;font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,4.2rem);line-height:1.02;font-weight:500;letter-spacing:-.04em}
+.seafood-story__copy>p:not(.eyebrow){max-width:680px;color:#52666c;line-height:1.75}
+.seafood-story__copy .button{margin-top:1rem}
+.seafood-proof{margin:0;padding:0;list-style:none;display:grid;gap:.65rem}
+.seafood-proof li{position:relative;padding:1rem 1.1rem 1rem 3rem;border:1px solid rgba(18,66,81,.14);background:#fff;border-radius:3px;color:#123745;font-size:.92rem;font-weight:700}
+.seafood-proof li::before{content:"";position:absolute;left:1.1rem;top:50%;width:.78rem;height:.42rem;border-left:2px solid #d75b40;border-bottom:2px solid #d75b40;transform:translateY(-65%) rotate(-45deg)}
+.seafood-gallery-section{padding:clamp(3.75rem,7vw,6.5rem) var(--gutter);background:#071e2b;color:#eff7f8}
+.seafood-section-heading{max-width:var(--width);margin:0 auto 2rem}
+.seafood-section-heading .eyebrow{color:#9fd4dc}
+.seafood-section-heading h2{max-width:820px}
+.seafood-section-heading>p:last-child{color:#abc1c8}
+.photo-grid--seafood{max-width:var(--width);margin:0 auto;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+.photo-grid--seafood .photo-card,.photo-grid--vessel-profile .photo-card{background:#0a2a38;border:1px solid rgba(141,198,209,.2)}
+.photo-grid--seafood .photo-link,.photo-grid--vessel-profile .photo-link{display:block;aspect-ratio:4/3;background:#0b2d3b}
+.photo-grid--seafood .photo-card__image,.photo-grid--vessel-profile .photo-card__image{height:100%;aspect-ratio:auto;object-fit:cover}
+.photo-card--quiet{border:0!important}
+.photo-card--quiet .photo-link::after{inset:7px}
+.photo-grid--vessel-profile{max-width:var(--width);margin:0 auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+.seafood-switcher{padding:2.5rem var(--gutter);background:#e5ece8;color:#102e3a}
+.seafood-switcher>.content-width,.seafood-switcher--landing{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);align-items:center;gap:2rem}
+.seafood-switcher h2{margin:.35rem 0;font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:500}
+.seafood-switcher__links{display:flex;flex-wrap:wrap;gap:.6rem}
+.seafood-switcher__link{display:inline-flex;align-items:center;min-height:44px;padding:.65rem .9rem;border:1px solid rgba(16,46,58,.22);border-radius:2px;color:#123c4d;text-decoration:none;font-size:.8rem;font-weight:750}
+.seafood-switcher__link:hover,.seafood-switcher__link[aria-current=page]{background:#10394c;color:#fff;border-color:#10394c}
+.seafood-wholesale,.vessel-profile-footer{padding:clamp(3rem,6vw,5rem) var(--gutter);background:#10394c;color:#f5fbfc}
+.seafood-wholesale>.content-width{display:flex;align-items:center;justify-content:space-between;gap:2rem}
+.seafood-wholesale h2,.vessel-profile-footer h2{max-width:720px;margin:.35rem 0 .75rem;font-family:var(--serif);font-size:clamp(2rem,4vw,3.8rem);font-weight:500;line-height:1.04}
+.seafood-wholesale p:not(.eyebrow){max-width:620px;margin:0;color:#c8d9dd;line-height:1.6}
+.seafood-wholesale .button--outline{border-color:#d5e4e6;color:#fff}
+.credit-callout--compact{display:block;min-height:0;padding:2.7rem var(--gutter);background:#071e2b;color:#fff}
+.credit-callout--compact .credit-callout__copy{width:min(var(--width),100%);margin:0 auto;padding:0;max-width:none}
+.credit-callout--compact h2{font-size:clamp(1.8rem,3.5vw,3rem)}
+.credit-callout--compact p:not(.eyebrow){color:#c7d7db}
+
+/* Product index uses a browsable wholesale catalog rather than repeating source blocks. */
+.market-index{max-width:var(--width)}
+.market-index__intro{max-width:800px;margin:0 auto 2.5rem;text-align:center;color:#bed0d5;line-height:1.7}
+.market-index__heading{max-width:850px;margin:0 auto 2.5rem;text-align:center}
+.market-index__heading h2{color:#f4fafb}
+.market-index__heading>p:last-child{color:#c0d2d6}
+.market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.market-card{display:flex;min-width:0;flex-direction:column;overflow:hidden;background:#f4f1e7;color:#132d36;text-decoration:none;box-shadow:0 12px 34px rgba(0,0,0,.22);transition:transform .2s,box-shadow .2s}
+.market-card:hover{transform:translateY(-4px);box-shadow:0 22px 52px rgba(0,0,0,.32)}
+.market-card__photo{position:relative;height:clamp(190px,19vw,280px);overflow:hidden;background:#153d4c}
+.market-card__photo::after{content:"";position:absolute;inset:9px;border:1px solid rgba(255,255,255,.45);pointer-events:none}
+.market-card__photo img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.market-card:hover .market-card__photo img{transform:scale(1.04)}
+.market-card__body{display:flex;flex:1;flex-direction:column;align-items:flex-start;padding:1.2rem}
+.market-card__body .eyebrow{color:#a14734}
+.market-card__body h2{margin:.3rem 0 .6rem;font-family:var(--serif);font-size:clamp(1.45rem,2vw,2rem);font-weight:500;line-height:1.1}
+.market-card__body p{margin:0 0 1.1rem;color:#52666c;font-size:.87rem;line-height:1.55}
+.market-card .arrow-link{color:#14556a}
+.market-quality{display:flex;justify-content:space-between;align-items:center;gap:2rem;margin:3.5rem 0;padding:2rem;background:#0c3040;border:1px solid rgba(150,205,217,.2);color:#f0f8fa}
+.market-quality h2{max-width:670px;margin:.35rem 0 .6rem;font-family:var(--serif);font-size:clamp(1.8rem,3.3vw,3rem);line-height:1.05;font-weight:500}
+.market-quality p:not(.eyebrow){max-width:680px;color:#c4d6da}
+.market-quality__links{display:grid;gap:.65rem;min-width:190px}
+.market-quality__links a{color:#bce5e8}
+.product-cta{margin:2rem 0 0;padding:clamp(2rem,4vw,3.5rem);background:#d6e4df;color:#103341}
+.product-cta .eyebrow{color:#a14734}
+.product-cta h2{max-width:760px;font-size:clamp(2rem,4vw,3.6rem)}
+.product-cta p:not(.eyebrow){max-width:700px;color:#4d666e}
+.product-cta .button--dark{background:#10394c;color:#fff}
+
+/* Vessel pages put the boat first, then make its specifications easy to scan. */
+.vessel-profile-hero{min-height:clamp(500px,62vw,730px);position:relative;display:flex;align-items:flex-end;overflow:hidden;background:#041923;color:#fff}
+.vessel-profile-hero__media,.vessel-profile-hero__shade{position:absolute;inset:0}
+.vessel-profile-hero__image{width:100%;height:100%;object-fit:cover;object-position:center 58%}
+.vessel-profile-hero__shade{background:linear-gradient(90deg,rgba(1,16,24,.9),rgba(2,23,34,.52) 55%,rgba(2,23,34,.1)),linear-gradient(0deg,rgba(1,16,24,.82),transparent 70%)}
+.vessel-profile-hero__content{position:relative;z-index:1;width:min(var(--width),100%);margin:0 auto;padding:clamp(2.5rem,6vw,5rem) var(--gutter)}
+.vessel-profile-hero__content .eyebrow{color:#afdce2}
+.vessel-profile-hero h1{max-width:900px;margin:.35rem 0 .7rem;font-family:var(--serif);font-size:clamp(3.2rem,8vw,7rem);font-weight:500;line-height:.96;letter-spacing:-.055em}
+.vessel-profile-hero__lead{max-width:650px;margin:0 0 1.2rem;color:rgba(255,255,255,.9);font-size:1.08rem;text-transform:uppercase;letter-spacing:.08em}
+.vessel-profile-hero__number{display:inline-flex;flex-direction:column;gap:.2rem;margin:0 1rem 1.15rem 0;padding:.75rem 1rem;border-left:2px solid var(--coral);background:rgba(4,29,41,.65)}
+.vessel-profile-hero__number span{font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:#c5d8dc}
+.vessel-profile-hero__number strong{font-size:1.15rem}
+.vessel-specs-section{padding:clamp(3.75rem,7vw,6.5rem) var(--gutter);background:#f4f1e7;color:#152e38}
+.vessel-specs-section .content-width,.vessel-gallery-section .content-width{max-width:var(--width)}
+.vessel-section-heading{margin:0 0 1.8rem}
+.vessel-section-heading .eyebrow{color:#a14734}
+.vessel-spec-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid rgba(17,58,73,.2)}
+.vessel-spec-item{min-width:0;padding:1.15rem 1rem;border-bottom:1px solid rgba(17,58,73,.2)}
+.vessel-spec-item:nth-child(4n+1){padding-left:0}
+.vessel-spec-item dt{margin-bottom:.35rem;color:#536c73;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em}
+.vessel-spec-item dd{margin:0;color:#123442;font-size:.96rem;font-weight:650;line-height:1.45;overflow-wrap:anywhere}
+.vessel-gallery-section{padding:clamp(3.75rem,7vw,6.5rem) var(--gutter);background:#071e2b;color:#eff7f8}
+.vessel-profile-footer{background:#0a2e3e}
+.vessel-profile-footer .button{margin-top:.5rem}
+.fleet-directory{display:grid;gap:clamp(3rem,6vw,5.5rem)}
+.fleet-category--directory{scroll-margin-top:120px}
+.fleet-category__heading{max-width:850px;margin:0 0 1.5rem}
+.fleet-category__heading h2{color:#f3fafb}
+.fleet-category__heading>p:last-child{color:#b9cdd2}
+.vessel-card--profile{position:relative;background:#f4f1e7;color:#132d36;border:1px solid rgba(161,210,219,.16);box-shadow:0 14px 38px rgba(0,0,0,.22)}
+.vessel-card--profile .vessel-card__photo{height:clamp(210px,21vw,290px)}
+.vessel-card__type{position:absolute;left:1rem;bottom:1rem;z-index:2;padding:.42rem .6rem;background:rgba(6,29,41,.88);color:#eaf6f7;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.vessel-card--profile .vessel-card__body{min-height:0;padding:1.15rem 1.25rem 1.3rem}
+.vessel-card--profile h3{margin:0 0 .45rem;font-size:1.65rem}
+.vessel-card__registry{color:#667a7e;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em}
+.vessel-card__facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:.75rem;margin:1rem 0 1.1rem;padding-top:.9rem;border-top:1px solid rgba(19,55,66,.15)}
+.vessel-card__facts>div{min-width:0}
+.vessel-card__facts dt{margin-bottom:.2rem;color:#687d80;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.vessel-card__facts dd{margin:0;color:#183d4b;font-size:.78rem;font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.vessel-card--profile .arrow-link{color:#14566c}
+
+@media(max-width:1100px){
+  .market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .photo-grid--seafood{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .vessel-card__photo{height:210px}
+  .vessel-spec-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .vessel-spec-item:nth-child(4n+1){padding-left:1rem}
+  .vessel-spec-item:nth-child(3n+1){padding-left:0}
+}
+@media(max-width:760px){
+  .seafood-hero,.vessel-profile-hero{min-height:560px}
+  .seafood-hero__shade{background:linear-gradient(90deg,rgba(1,18,27,.83),rgba(1,18,27,.25)),linear-gradient(0deg,rgba(1,17,25,.9),rgba(1,17,25,.08) 78%)}
+  .seafood-story__grid{grid-template-columns:1fr;gap:1.6rem}
+  .seafood-switcher>.content-width,.seafood-switcher--landing{grid-template-columns:1fr;gap:1.2rem}
+  .seafood-wholesale>.content-width{align-items:flex-start;flex-direction:column}
+  .market-quality{align-items:flex-start;flex-direction:column}
+  .market-quality__links{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .photo-grid--seafood,.photo-grid--vessel-profile{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vessel-spec-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vessel-spec-item:nth-child(3n+1){padding-left:1rem}
+  .vessel-spec-item:nth-child(2n+1){padding-left:0}
+  .vessel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .seafood-hero,.vessel-profile-hero{min-height:500px}
+  .seafood-hero h1,.vessel-profile-hero h1{font-size:clamp(3rem,15vw,4.2rem)}
+  .seafood-hero .button-row,.seafood-wholesale .button-row{align-items:stretch;flex-direction:column}
+  .seafood-hero .button,.seafood-wholesale .button{width:100%}
+  .market-grid,.vessel-grid{grid-template-columns:1fr}
+  .market-card__photo{height:260px}
+  .photo-grid--seafood{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+  .photo-grid--vessel-profile{grid-template-columns:1fr}
+  .photo-grid--vessel-profile .photo-link{aspect-ratio:16/10}
+  .vessel-spec-grid{grid-template-columns:1fr}
+  .vessel-spec-item,.vessel-spec-item:nth-child(n){padding:.85rem 0}
+  .vessel-card--profile .vessel-card__photo{height:250px}
+}
+@media(prefers-reduced-motion:reduce){
+  .market-card,.market-card__photo img,.vessel-card--profile,.seafood-hero__image,.vessel-profile-hero__image{transition:none!important}
+}
