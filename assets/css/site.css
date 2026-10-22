@@ -14,6 +14,32 @@
 @media(max-width:560px){body{font-size:15px}.utility-bar{font-size:.65rem}.utility-bar__inner{padding:.45rem .8rem}.utility-bar__actions{gap:.7rem}.utility-bar__actions>span{display:none}.site-header__inner{min-height:68px}.brand,.brand-logo{width:135px;flex-basis:135px}.home-hero{min-height:560px;height:calc(88svh - 68px)}.hero-slide__content{top:47%;width:calc(100% - 2*var(--gutter));padding-bottom:4rem}.hero-slide h1{font-size:clamp(3.4rem,16vw,5.6rem)}.hero-slide__copy{font-size:.95rem}.hero-slide__actions{align-items:flex-start;flex-direction:column;gap:.75rem}.home-hero__controls{gap:.32rem}.home-hero__controls>button{width:34px;height:34px}.hero-dots{gap:.28rem}.hero-dots button{width:7px;height:7px}.hero-scroll{font-size:.58rem}.section{padding:4rem 1.1rem}.section-heading{margin-bottom:2rem}.journey-grid,.vessel-grid,.people-grid,.product-grid,.video-card-grid{grid-template-columns:1fr}.journey-card__photo,.product-card__photo,.vessel-card__photo{height:230px}.product-card__photo{height:245px}.split-feature__image{height:270px}.split-feature h2{font-size:2.55rem}.stats-grid{grid-template-columns:repeat(2,1fr)}.stat-card{padding:1.2rem .5rem}.stat-card:nth-child(3){border-left:0}.stat-card:nth-child(n+3){border-top:1px solid var(--line)}.credit-callout__image{height:66vw;min-height:230px}.credit-callout__copy{padding:2.6rem 1.2rem}.brand-grid{grid-template-columns:repeat(2,1fr)}.brand-mark{height:120px}.breadcrumbs{padding:1rem 1.1rem;font-size:.65rem}.page-hero{height:400px}.page-hero__content{padding:2rem 1.1rem 2.4rem}.page-hero h1{font-size:clamp(2.8rem,13vw,4.6rem)}.page-content{padding:3rem 1.1rem}.body-copy{font-size:.96rem}.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.photo-card figcaption{font-size:.6rem;padding:.4rem}.fleet-intro{align-items:flex-start;flex-direction:column}.vessel-overview{padding:2rem 1.1rem}.vessel-overview__top{align-items:flex-start;flex-direction:column}.vessel-id{border-left:0;border-top:1px solid var(--line);padding:.7rem 0 0}.spec-grid{grid-template-columns:repeat(2,1fr)}.mini-vessel-grid{grid-template-columns:repeat(2,1fr)}.mini-vessel>div{height:95px}.person-card__photo{height:300px}.form-row{grid-template-columns:1fr}.contact-map{height:210px}.form-card{padding:1.25rem}.form-card h2{font-size:2rem}.sitemap-grid{grid-template-columns:1fr}.document-card{align-items:flex-start;flex-direction:column}.product-cta{padding:1.5rem 1rem}.product-cta h2{font-size:2rem}.footer-main{grid-template-columns:1fr 1fr;padding:3rem 1.1rem;gap:1.6rem 1rem}.footer-brand{grid-column:1/-1}.footer-bottom{align-items:flex-start;flex-direction:column;padding:1rem 1.1rem}.lightbox{padding:3.8rem .6rem 1rem}.lightbox__arrow--prev{left:.4rem}.lightbox__arrow--next{right:.4rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
+/* Deep UX pass: tighter page rhythm, clearer image hierarchy, and useful directories. */
+.home-hero__content{width:min(690px,78vw)}
+.home-hero__content h1{max-width:700px;font-size:clamp(3.1rem,6.2vw,5.5rem);line-height:1.02}
+.home-hero__content>p:not(.eyebrow){max-width:520px;font-size:clamp(1rem,1.3vw,1.12rem)}
+.page-hero{height:clamp(300px,34vw,430px)}
+.page-hero__shade{background:radial-gradient(ellipse at 75% 24%,rgba(28,151,182,.12),transparent 45%),linear-gradient(90deg,rgba(2,19,29,.72),rgba(3,35,51,.2) 78%),linear-gradient(0deg,rgba(2,18,27,.63),transparent 76%)}
+.page-hero h1{max-width:900px;font-size:clamp(2.65rem,5.2vw,4.7rem)}
+.page-content .body-copy,.page-content .content-heading,.page-content .content-list{max-width:900px}
+.page-content .photo-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));}
+.page-content .photo-card__image{height:clamp(180px,22vw,290px);aspect-ratio:4/3;object-fit:cover}
+.gallery-more{max-width:var(--width);margin:1.5rem auto 0;padding:0 1rem;border:1px solid rgba(133,202,215,.2);background:rgba(8,39,53,.46)}
+.gallery-more summary{color:#eaf3f6}
+.people-tools{max-width:var(--width);margin:0 auto 1.4rem;display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:.35rem 1rem;align-items:center}
+.people-tools label{grid-column:1/-1;color:#b5d8e0;font-size:.76rem;font-weight:750;letter-spacing:.045em}
+.people-tools input{min-height:48px;padding:.75rem .9rem;border:1px solid rgba(133,202,215,.35);background:#092735;color:#f4fafc;font:inherit}
+.people-tools input::placeholder{color:#a6c0c7}
+.people-result-count{margin:0;color:#b5d8e0;font-size:.8rem}
+.person-card[hidden]{display:none}
+.people-grid{align-items:start}
+.person-card__photo{height:clamp(190px,20vw,250px)}
+.company-news-content{max-width:960px;margin:auto}
+.company-news-content .content-heading{padding-top:1.4rem;border-top:1px solid rgba(133,202,215,.22)}
+.archive-note{max-width:960px;margin:0 auto 2rem;padding:1.2rem 1.4rem;border-left:3px solid var(--coral);background:rgba(8,39,53,.55)}
+.archive-note p:last-child{margin-bottom:0}
+@media(max-width:560px){.page-hero{height:300px}.page-hero h1{font-size:clamp(2.35rem,10vw,3.3rem)}.page-hero__content{padding-bottom:2rem}.home-hero__content h1{font-size:clamp(2.7rem,12vw,4.1rem)}.home-hero__content>p:not(.eyebrow){max-width:30rem;font-size:1rem}.people-tools{grid-template-columns:1fr}.people-result-count{padding-top:.2rem}.person-card__photo{height:250px}}
+
 /* Buyer journeys and vessel directory layout */
 .home-hero--static .home-hero__image,.home-hero--static .home-hero__veil{position:absolute;inset:0}
 .home-hero--static .home-hero__photo{width:100%;height:100%;object-fit:cover;object-position:center 54%;filter:saturate(.8) contrast(1.04)}
