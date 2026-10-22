@@ -13,6 +13,7 @@ CONTENT = ROOT / "content" / "pages.json"
 ASSET_MAP = ROOT / "content" / "assets.json"
 PAGES = json.loads(CONTENT.read_text(encoding="utf-8"))
 ASSETS = json.loads(ASSET_MAP.read_text(encoding="utf-8")) if ASSET_MAP.exists() else {}
+SEAFOOD_GALLERIES = json.loads((ROOT / "content" / "seafood-galleries.json").read_text(encoding="utf-8"))
 BY_SLUG = {p["slug"]: p for p in PAGES}
 BASE_URL = "https://www.fleetfisheries.com"
 
@@ -56,6 +57,48 @@ PRODUCTS = [
     ("CRAB", "Crab", "crab", "Ask about our crab products today."),
     ("FRESH FISH", "Wholefish & fillets", "fish", "Swordfish, tuna, halibut and other products from the fish department."),
 ]
+
+SEAFOOD_PAGE_COPY = {
+    "sea-scallops": {
+        "eyebrow": "From our own fleet",
+        "quality_heading": "Quality checks follow every lot.",
+        "quality_copy": "Every lot of Fleet Fisheries scallops is examined by the quality control team. In addition to organoleptic testing, the review includes moisture content, raw and cooked texture, size and color uniformity, and screening for extraneous material.",
+        "quality_points": ["Organoleptic testing", "Moisture content", "Raw and cooked texture", "Size and color uniformity", "Extraneous material screening"],
+        "fleet_label": "See our scallopers",
+        "fleet_href": "/our-fleet/#scallop-vessels",
+    },
+    "lobster": {
+        "eyebrow": "Live North Atlantic lobster",
+        "quality_heading": "Live product care at our New Bedford facilities.",
+        "quality_copy": "Fleet Fisheries' facilities include a 40,000 lb. lobster pool and a live drip system that can hold an additional 60,000 lb. of live lobster and crab. The system filters the water, supports inventory and grading, and is designed to help decrease mortality.",
+        "quality_points": ["Live lobster pool", "Filtered live holding system", "Grading and inventory support"],
+        "fleet_label": "See our lobster boats",
+        "fleet_href": "/our-fleet/#lobster-crab-vessels",
+    },
+    "crab": {
+        "eyebrow": "Crab products",
+        "quality_heading": "Live handling supported by our shore facilities.",
+        "quality_copy": "Fleet Fisheries' live drip system is designed for lobster and crab. It can hold an additional 60,000 lb. of live product, filter the water, support inventory and grading, and help decrease mortality.",
+        "quality_points": ["Live lobster and crab system", "Filtered water", "Inventory and grading support"],
+        "fleet_label": "See our lobster and crab boats",
+        "fleet_href": "/our-fleet/#lobster-crab-vessels",
+    },
+    "fish": {
+        "eyebrow": "Wholefish & fillets",
+        "quality_heading": "Quality continues through handling and delivery.",
+        "quality_copy": "Fleet Fisheries tracks seafood temperature in its coolers, refrigerated trucks and freezers, as well as during freight air travel. Time-temperature indicators support that monitoring from the plant to delivery.",
+        "quality_points": ["Swordfish", "Tuna", "Halibut", "Other fish department products"],
+        "fleet_label": "See our fishing fleet",
+        "fleet_href": "/our-fleet/",
+    },
+}
+
+SEAFOOD_DESCRIPTIONS = {
+    "sea-scallops": "Fresh sea scallops sourced directly from Fleet Fisheries' own commercial fishing fleet. Learn about the lot-by-lot quality checks and contact the sales team.",
+    "lobster": "Live North Atlantic lobster from Fleet Fisheries. Explore lobster photos, live handling information and wholesale sales contacts.",
+    "crab": "Crab products from Fleet Fisheries, supported by live holding, grading and inventory systems at the New Bedford facilities.",
+    "fish": "Wholefish and fillets including swordfish, tuna, halibut and other products from Fleet Fisheries' fish department.",
+}
 
 def esc(value):
     return html.escape(str(value or ""), quote=True)
@@ -203,6 +246,8 @@ def page_image(slug, contains=None, default=0):
     return images[default] if len(images)>default else (images[0] if images else {"src":"","key":"","fallback":"","alt":"Fleet Fisheries photo"})
 
 def page_description(page):
+    if page.get("slug") in SEAFOOD_DESCRIPTIONS:
+        return SEAFOOD_DESCRIPTIONS[page["slug"]]
     return page.get("description") or lead_text(page) or f"Fleet Fisheries Inc. — {short_title(page)}."
 
 def header_html(active_slug=""):
@@ -267,6 +312,26 @@ def render_photo_group(images, class_name="photo-grid"):
     if not filtered: return ""
     figures=''.join(image_figure(img) for img in filtered)
     return f'<div class="{esc(class_name)}">{figures}</div>'
+
+def render_image_grid(images, class_name="photo-grid"):
+    """Render a clean, caption-free image grid with accessible lightbox links."""
+    filtered=[]; seen=set()
+    for image in images:
+        key=image_key(image) or image.get("src","")
+        if is_decorative(image) or not key or key in seen: continue
+        seen.add(key); filtered.append(image)
+    if not filtered: return ""
+    figures=[]
+    for image in filtered:
+        remote=image_remote(image,width=1800)
+        fallback=image_fallback(image)
+        alt=image_alt(image)
+        figures.append(
+            f'<figure class="photo-card photo-card--quiet"><a class="photo-link" href="{esc(remote)}" data-lightbox '
+            f'data-fallback-href="{esc(fallback)}" aria-label="View larger image: {esc(alt)}">'
+            f'{image_tag(image,"photo-card__image",loading="lazy",width=1400)}</a></figure>'
+        )
+    return f'<div class="{esc(class_name)}">{"".join(figures)}</div>'
 
 def paragraph_html(block, css="body-copy"):
     return f'<p class="{esc(css)}">{fragments_html(block.get("fragments"),block.get("text",""))}</p>'
@@ -439,28 +504,56 @@ def current_fleet_cards():
 
 def render_fleet():
     page=BY_SLUG["our-fleet"]
-    lead=lead_text(page)
-    cards=current_fleet_cards()
+    vessels=[p for p in PAGES if p["slug"].startswith("fv-")]
     groups=[]
-    for category in ["Fleet Scallop Vessels","Fleet Lobster & Crab Vessels"]:
-        section=[c for c in cards if c["group"]==category]
+    for category,anchor in [("Scallop fishing vessels","scallop-vessels"),("Lobster & crab fishing vessels","lobster-crab-vessels")]:
+        section=[p for p in vessels if vessel_category(p)==category]
         if not section: continue
-        card_html=[]
-        for c in section:
-            cta=link_html("View vessel profile",c["href"],"arrow-link") if c["href"] else '<span class="eyebrow">Vessel information</span>'
-            card_html.append(f'''<article class="vessel-card"><div class="vessel-card__photo">{image_tag(c['image'],"",loading="lazy",width=1000)}</div><div class="vessel-card__body"><span class="eyebrow">{esc(category.replace('Fleet ',''))}</span><h3>{esc(c['name'])}</h3><p>{esc(c['description'])}</p>{cta}</div></article>''')
-        groups.append(f'<section class="fleet-category"><div class="section-heading section-heading--compact"><p class="eyebrow">{esc(category)}</p><h2>{esc(category)}</h2></div><div class="vessel-grid">{"".join(card_html)}</div></section>')
+        groups.append(f'<section class="fleet-category fleet-category--directory" id="{anchor}"><div class="fleet-category__heading"><p class="eyebrow">{len(section)} vessels</p><h2>{esc(category)}</h2><p>Open a profile for vessel specifications and photographs.</p></div><div class="vessel-grid">{"".join(render_vessel_card(p) for p in section)}</div></section>')
     videos=video_cards(page)
     legacy=[]; after=False
     for b in page.get("blocks",[]):
         if b.get("type")=="heading" and "MISCELLANEOUS" in b.get("text",""): after=True
         elif b.get("type")=="image" and after: legacy.append(b)
     legacy_html=render_photo_group(legacy,"photo-grid photo-grid--archive")
-    return f'''{breadcrumbs_html(page)}{page_hero(page,meaningful_images(page)[0] if meaningful_images(page) else None,lead=lead)}
-      <div class="page-content"><div class="content-width"><div class="fleet-intro">{paragraph_html({'text':'See our modern fleet of commercial fishing vessels.'},'body-copy body-copy--large')}{link_html('View all vessel profiles','/list-of-all-fleet-vessels/','button button--dark')}</div>{''.join(groups)}
+    hero=meaningful_images(page)[0] if meaningful_images(page) else None
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Browse the vessels by fishery, then open a profile to see its specifications and photos.")}
+      <div class="page-content"><div class="content-width fleet-directory">{''.join(groups)}
         <section class="video-section"><div class="section-heading section-heading--compact"><p class="eyebrow">On the water</p><h2>Fleet Fisheries videos</h2></div><div class="video-card-grid">{videos}</div></section>
         <section class="archive-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Fleet history</p><h2>From the archives</h2></div>{legacy_html}{link_html('See all vessel profiles','/list-of-all-fleet-vessels/','button button--outline')}</section>
       </div></div>'''
+
+def vessel_category(page, subtitle="", spec=None):
+    spec=spec or {}
+    source=" ".join([subtitle, str(spec.get("Fishery Type","")), page.get("title",""), page.get("h1","")]).lower()
+    if "scallop" in source: return "Scallop fishing vessels"
+    if "lobster" in source or "crab" in source: return "Lobster & crab fishing vessels"
+    return "Commercial fishing vessels"
+
+def vessel_images(page):
+    title=short_title(page)
+    slug_tokens=[x for x in re.findall(r"[a-z0-9]+",page.get("slug","").lower().replace("fv-","",1)) if x not in ("and","the")]
+    images=page.get("images",[])
+    product_only=("naked-catch", "live-lobster", "lobster-istock", "big-boy-premium-scallops", "scallops-in-blue-gloved-hands", "crab-on-ice", "crate-of-crabs", "swordfish-on-ice", "logo", "tops-of-boats")
+    def description(image):
+        return " ".join([str(image.get("alt","")), str(image.get("src","")), str(ASSETS.get(image_key(image),{}).get("source_name",""))]).lower().replace("%20"," ")
+    def eligible(image, index):
+        text=description(image)
+        if is_decorative(image) or any(term in text for term in product_only): return False
+        if text.strip() in ("sub", "submarine"): return False
+        if index==0: return True
+        if not clean(image.get("alt")): return True
+        return slug_tokens and all(token in text for token in slug_tokens)
+    selected=[]; seen=set()
+    for index,image in enumerate(images):
+        key=image_key(image) or image.get("src","")
+        if not key or key in seen or not eligible(image,index): continue
+        seen.add(key)
+        item=dict(image)
+        if not clean(item.get("alt")):
+            item["alt"]=f"{title} vessel photo"
+        selected.append(item)
+    return selected
 
 def vessel_data(page):
     title=short_title(page)
@@ -479,37 +572,50 @@ def vessel_data(page):
     registry=""
     for b in page.get("blocks",[]):
         if b.get("type")=="heading" and b.get("text","").isdigit(): registry=b["text"]
-    images=meaningful_images(page)
+    images=vessel_images(page)
     return title,subtitle,spec,registry,images
+
+def vessel_card_facts(spec):
+    facts=[]
+    year=spec.get("Year Built") or spec.get("Year of Completion")
+    length=spec.get("Length")
+    port=spec.get("Hailing Port") or spec.get("Hauling Port")
+    for label,value in (("Built",year),("Length",length),("Home port",port)):
+        if value: facts.append((label,value))
+    return facts
+
+def render_vessel_card(page):
+    title,subtitle,spec,registry,photos=vessel_data(page)
+    image=photos[0] if photos else None
+    category=vessel_category(page,subtitle,spec)
+    facts="".join(f'<div><dt>{esc(label)}</dt><dd>{esc(value)}</dd></div>' for label,value in vessel_card_facts(spec))
+    registry_html=f'<span class="vessel-card__registry">Vessel No. {esc(registry)}</span>' if registry else ""
+    return f'''<a class="vessel-card vessel-card--profile" href="{esc(page['path'])}"><div class="vessel-card__photo">{image_tag(image,"",loading="lazy",width=1000) if image else ''}<span class="vessel-card__type">{esc(category.replace(' vessels',''))}</span></div><div class="vessel-card__body"><h3>{esc(title)}</h3>{registry_html}<dl class="vessel-card__facts">{facts}</dl><span class="arrow-link">Open vessel profile <span aria-hidden="true">↗</span></span></div></a>'''
 
 def render_vessel(page):
     title,subtitle,spec,registry,images=vessel_data(page)
     hero=images[0] if images else None
-    gallery=render_photo_group(images[1:],"photo-grid photo-grid--vessel")
-    spec_html=''.join(f'<div class="spec-item"><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k,v in spec.items())
-    identity=f'<div class="vessel-id"><span>Vessel ID</span><strong>{esc(registry)}</strong></div>' if registry else ''
-    other=[p for p in PAGES if p["slug"].startswith("fv-") and p["slug"]!=page["slug"]]
-    other_cards=[]
-    for item in other[:4]:
-        im=meaningful_images(item)[0] if meaningful_images(item) else None
-        other_cards.append(f'<a class="mini-vessel" href="{esc(item["path"])}"><div>{image_tag(im,"",loading="lazy",width=600) if im else ""}</div><span>{esc(short_title(item))}</span></a>')
-    body=render_blocks(page,skip_hero=hero,skip_lead=False)
-    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=subtitle or lead_text(page))}<div class="vessel-overview"><div class="content-width"><div class="vessel-overview__top"><div><p class="eyebrow">Fleet vessel profile</p><h2>{esc(title)}</h2></div>{identity}</div>{f'<dl class="spec-grid">{spec_html}</dl>' if spec_html else ''}</div></div><div class="page-content"><div class="content-width">{body}{'<section class="archive-section"><div class="section-heading section-heading--compact"><p class="eyebrow">Explore more</p><h2>Other vessel profiles</h2></div><div class="mini-vessel-grid">'+''.join(other_cards)+'</div></section>' if other_cards else ''}</div></div>'''
+    category=vessel_category(page,subtitle,spec).replace(" vessels","")
+    label=subtitle or spec.get("Fishery Type") or "Commercial fishing vessel"
+    hero_html=(f'<div class="vessel-profile-hero__media">{image_tag(hero,"vessel-profile-hero__image",loading="eager",width=2200)}</div>' if hero else '<div class="vessel-profile-hero__media vessel-profile-hero__media--empty"></div>')
+    identity=f'<div class="vessel-profile-hero__number"><span>Vessel number</span><strong>{esc(registry)}</strong></div>' if registry else ""
+    spec_html=''.join(f'<div class="vessel-spec-item"><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k,v in spec.items())
+    gallery=render_image_grid(images[1:],"photo-grid photo-grid--vessel-profile")
+    return f'''{breadcrumbs_html(page)}<section class="vessel-profile-hero">{hero_html}<div class="vessel-profile-hero__shade"></div><div class="vessel-profile-hero__content"><p class="eyebrow">{esc(category)}</p><h1>{esc(title)}</h1><p class="vessel-profile-hero__lead">{esc(label)}</p>{identity}{link_html("View all vessels","/list-of-all-fleet-vessels/","button button--light")}</div></section>
+      <section class="vessel-specs-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">Fleet vessel profile</p><h2>Vessel specifications</h2></div>{f'<dl class="vessel-spec-grid">{spec_html}</dl>' if spec_html else '<p>Vessel specifications are not available on the public source page.</p>'}</div></section>
+      {f'<section class="vessel-gallery-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">On the water</p><h2>{esc(title)} photographs</h2></div>{gallery}</div></section>' if gallery else ''}
+      <section class="vessel-profile-footer"><div class="content-width"><p class="eyebrow">Fleet Fisheries Inc.</p><h2>Explore the full fishing fleet.</h2>{link_html("Browse all vessel profiles","/list-of-all-fleet-vessels/","button button--light")}</div></section>'''
 
 def render_all_vessels():
     page=BY_SLUG["list-of-all-fleet-vessels"]
     vessels=[p for p in PAGES if p["slug"].startswith("fv-")]
-    scallop=[]; shellfish=[]
-    for p in vessels:
-        if "lobster" in p.get("title","").lower() or "crab" in p.get("title","").lower(): shellfish.append(p)
-        else: scallop.append(p)
-    def cards(items):
-        out=[]
-        for p in items:
-            image=meaningful_images(p)[0] if meaningful_images(p) else None
-            out.append(f'<a class="vessel-card vessel-card--link" href="{esc(p["path"])}"><div class="vessel-card__photo">{image_tag(image,"",loading="lazy",width=900) if image else ""}</div><div class="vessel-card__body"><span class="eyebrow">{esc("Lobster & crab" if p in shellfish else "Scallop vessel")}</span><h3>{esc(short_title(p))}</h3><span class="arrow-link">Vessel profile <span aria-hidden="true">↗</span></span></div></a>')
-        return ''.join(out)
-    return f'''{breadcrumbs_html(page)}{page_hero(page,meaningful_images(page)[0] if meaningful_images(page) else None,lead=lead_text(page))}<div class="page-content"><div class="content-width"><section class="fleet-category"><div class="section-heading section-heading--compact"><p class="eyebrow">Scallop vessels</p><h2>Scallop vessel profiles</h2></div><div class="vessel-grid">{cards(scallop)}</div></section><section class="fleet-category"><div class="section-heading section-heading--compact"><p class="eyebrow">Lobster &amp; crab</p><h2>Lobster and crab vessel profiles</h2></div><div class="vessel-grid">{cards(shellfish)}</div></section></div></div>'''
+    hero=meaningful_images(page)[0] if meaningful_images(page) else None
+    groups=[]
+    for category,anchor in [("Scallop fishing vessels","scallop-vessels"),("Lobster & crab fishing vessels","lobster-crab-vessels"),("Commercial fishing vessels","other-vessels")]:
+        section=[p for p in vessels if vessel_category(p)==category]
+        if section:
+            groups.append(f'<section class="fleet-category fleet-category--directory" id="{anchor}"><div class="fleet-category__heading"><p class="eyebrow">{len(section)} vessels</p><h2>{esc(category)}</h2><p>Open a profile for vessel specifications and photographs.</p></div><div class="vessel-grid">{"".join(render_vessel_card(p) for p in section)}</div></section>')
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Browse every public vessel profile, organized by fishery.")}<div class="page-content"><div class="content-width fleet-directory">{"".join(groups)}</div></div>'''
 
 def possible_name(text):
     text=clean(text)
@@ -672,9 +778,11 @@ def render_site_map(page):
 def page_body(page):
     slug=page["slug"]
     if slug=="": return home_html()
+    if slug=="from-the-sea": return render_from_the_sea(page)
     if slug=="our-fleet": return render_fleet()
     if slug=="list-of-all-fleet-vessels": return render_all_vessels()
     if slug.startswith("fv-"): return render_vessel(page)
+    if slug in SEAFOOD_PAGE_COPY: return render_seafood_page(page)
     if slug in ("meet-our-team","sales"): return render_people(page)
     if slug=="contact-us": return render_contact(page)
     if slug=="vessel-jobs": return render_jobs(page)
@@ -692,13 +800,70 @@ def page_body(page):
 
 def render_products_page(page):
     hero=meaningful_images(page)[0] if meaningful_images(page) else None
-    source_imgs=page.get("images",[])
     cards=[]
     for label,title,slug,copy in PRODUCTS:
-        im=next((x for x in source_imgs if label.lower().split()[0] in (x.get("alt","")+" "+x.get("src","")).lower()),page_image(slug))
-        cards.append(f'<a class="product-card" href="/{slug}/"><div class="product-card__photo">{image_tag(im,"",loading="lazy",width=950)}</div><div class="product-card__body"><span class="eyebrow">{esc(label)}</span><h2>{esc(title)}</h2><p>{esc(copy)}</p><span class="arrow-link">Explore <span aria-hidden="true">↗</span></span></div></a>')
-    body=render_blocks(page,skip_hero=hero)
-    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=lead_text(page))}<div class="page-content"><div class="content-width"><div class="product-grid">{"".join(cards)}</div>{body}<section class="product-cta"><p class="eyebrow">Wholesale seafood</p><h2>Talk with a Fleet Fisheries sales associate.</h2><p>Contact one of our seafood experts about placing wholesale seafood orders.</p>{link_html("Contact the sales team","/sales/","button button--dark")}</section></div></div>'''
+        im=seafood_hero_image(BY_SLUG[slug])
+        cards.append(f'<a class="market-card" href="/{slug}/"><div class="market-card__photo">{image_tag(im,"",loading="lazy",width=1100)}</div><div class="market-card__body"><span class="eyebrow">{esc(label)}</span><h2>{esc(title)}</h2><p>{esc(copy)}</p><span class="arrow-link">View seafood details <span aria-hidden="true">↗</span></span></div></a>')
+    exact_intro=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="paragraph" and "your #1 source" in b.get("text","").lower()),"")
+    source_tagline=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="paragraph" and "fresh, quality seafood" in b.get("text","").lower()),"Fresh, quality seafood direct from the source.")
+    callout_heading=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="heading" and "Begin Your Journey" in b.get("text","")),"Begin Your Journey with Fleet Fisheries Today...")
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead=source_tagline)}<div class="page-content"><div class="content-width market-index"><div class="market-index__intro"><p>{esc(exact_intro)}</p></div><div class="market-grid">{"".join(cards)}</div><section class="market-quality"><div><p class="eyebrow">Quality &amp; handling</p><h2>Seafood backed by our own fleet and shore operations.</h2><p>Learn about Fleet Fisheries' quality assurance, traceability, facilities and shipping.</p></div><div class="market-quality__links">{link_html("Quality assurance","/quality-assurance/","text-link")}{link_html("Traceability","/traceability/","text-link")}{link_html("Fleet facilities","/fleet-facilities/","text-link")}{link_html("Shipping","/shipping/","text-link")}</div></section><section class="product-cta"><p class="eyebrow">Wholesale seafood</p><h2>Talk with a Fleet Fisheries sales associate.</h2><p>Contact one of our sales associates to discuss products and wholesale orders.</p><div class="button-row">{link_html("Contact the sales team","/sales/","button button--dark")}<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a></div></section><section class="credit-callout credit-callout--compact"><div class="credit-callout__copy"><p class="eyebrow">Wholesale accounts</p><h2>{esc(callout_heading)}</h2><p>Credit application</p>{link_html("Apply now","/credit-application/","button button--light")}</div></section></div></div>'''
+
+def seafood_hero_image(page):
+    slug=page["slug"]
+    match={
+        "sea-scallops":lambda: page_image(slug,contains="scallops"),
+        "lobster":lambda: page_image(slug,contains="live-lobster-in-hand"),
+        "crab":lambda: page_image(slug,contains="naked-catch-crab"),
+        "fish":lambda: page_image(slug,contains="swordfish-on-ice"),
+    }
+    image=match.get(slug,lambda:None)()
+    return image or page_image(slug)
+
+def seafood_gallery(slug, hero):
+    label={"sea-scallops":"Sea scallops","lobster":"Lobster","crab":"Crab","fish":"Fish"}[slug]
+    hero_key=image_key(hero) if hero else ""
+    images=[]
+    for key in SEAFOOD_GALLERIES.get(slug,[]):
+        if key==hero_key: continue
+        images.append({"key":key,"alt":label})
+    return images
+
+def render_seafood_page(page):
+    slug=page["slug"]
+    copy=SEAFOOD_PAGE_COPY[slug]
+    hero=seafood_hero_image(page)
+    lead=lead_text(page)
+    gallery=render_image_grid(seafood_gallery(slug,hero),"photo-grid photo-grid--seafood")
+    exact_scallop_line=""
+    call_heading=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="heading" and "Call us today" in b.get("text","").lower()),"")
+    if call_heading: exact_scallop_line=f'<p class="seafood-hero__note">{esc(call_heading)}</p>'
+    product_links=[]
+    for label,title,target,copy_text in PRODUCTS:
+        if target==slug: continue
+        product_links.append(link_html(title,f"/{target}/","seafood-switcher__link"))
+    source_vessels=link_html(copy["fleet_label"],copy["fleet_href"],"button button--outline")
+    quality_points=''.join(f'<li>{esc(text)}</li>' for text in copy["quality_points"])
+    main_cta=link_html("Contact the sales team","/sales/","button button--dark")
+    phone='<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a>'
+    credit_heading=next((b.get("text","") for b in page.get("blocks",[]) if b.get("type")=="heading" and "Begin Your Journey" in b.get("text","")),"Begin Your Journey with Fleet Fisheries Today...")
+    return f'''{breadcrumbs_html(page)}<section class="seafood-hero seafood-hero--{esc(slug)}"><div class="seafood-hero__media">{image_tag(hero,"seafood-hero__image",loading="eager",width=2200)}</div><div class="seafood-hero__shade"></div><div class="seafood-hero__content"><p class="eyebrow">From the sea · {esc(copy['eyebrow'])}</p><h1>{esc(short_title(page))}</h1><p class="seafood-hero__lead">{esc(lead)}</p>{exact_scallop_line}<div class="button-row">{main_cta}{phone}</div></div></section>
+      <section class="seafood-story"><div class="content-width seafood-story__grid"><div class="seafood-story__copy"><p class="eyebrow">Quality &amp; sourcing</p><h2>{esc(copy['quality_heading'])}</h2><p>{esc(copy['quality_copy'])}</p>{source_vessels}</div><ul class="seafood-proof">{quality_points}</ul></div></section>
+      <section class="seafood-gallery-section"><div class="content-width"><div class="seafood-section-heading"><p class="eyebrow">Fleet Fisheries · New Bedford, Massachusetts</p><h2>{esc(short_title(page))} from every angle.</h2><p>Product photographs from Fleet Fisheries.</p></div>{gallery}</div></section>
+      <section class="seafood-switcher"><div class="content-width"><div><p class="eyebrow">Our products</p><h2>Explore more seafood.</h2></div><nav class="seafood-switcher__links" aria-label="More seafood products">{"".join(product_links)}</nav></div></section>
+      <section class="seafood-wholesale"><div class="content-width"><div><p class="eyebrow">Wholesale seafood</p><h2>Ask about current products and availability.</h2><p>Speak with the Fleet Fisheries sales team about product details and wholesale orders.</p></div><div class="button-row">{link_html("Contact sales","/sales/","button button--light")}<a class="button button--outline" href="tel:+15089963742">Call (508) 996-3742</a></div></div></section>
+      <section class="credit-callout credit-callout--compact"><div class="credit-callout__copy"><p class="eyebrow">Wholesale accounts</p><h2>{esc(credit_heading)}</h2><p>Credit application</p>{link_html("Apply now","/credit-application/","button button--light")}</div></section>'''
+
+def render_from_the_sea(page):
+    hero=meaningful_images(page)[0] if meaningful_images(page) else None
+    cards=[]
+    for label,title,slug,copy in PRODUCTS:
+        image=seafood_hero_image(BY_SLUG[slug])
+        cards.append(f'<a class="market-card" href="/{slug}/"><div class="market-card__photo">{image_tag(image,"",loading="lazy",width=1000)}</div><div class="market-card__body"><span class="eyebrow">{esc(label)}</span><h2>{esc(title)}</h2><p>{esc(copy)}</p><span class="arrow-link">Explore product <span aria-hidden="true">↗</span></span></div></a>')
+    stewardship=[]
+    for slug,label,description in [("our-fleet","Our fleet","Take a look at our fleet of commercial fishing vessels."),("sustainability","Sustainability","We understand how important it is to keep our industry sustainable for generations to come."),("health-wellness","Health & wellness","Seafood is a healthy source of protein and nutrients."),("best-practices","Best practices","Fleet Fisheries works with agencies and industry groups to manage fisheries and protect ocean ecology.")]:
+        stewardship.append(link_html(label,f"/{slug}/","seafood-switcher__link"))
+    return f'''{breadcrumbs_html(page)}{page_hero(page,hero,lead="Explore seafood sourced by Fleet Fisheries and the fishing fleet behind it.")}<div class="page-content"><div class="content-width market-index"><div class="market-index__heading"><p class="eyebrow">From the sea</p><h2>Choose your seafood.</h2><p>Open a product page for its photos, sourcing information and quality details.</p></div><div class="market-grid">{"".join(cards)}</div><section class="seafood-switcher seafood-switcher--landing"><div><p class="eyebrow">More from the sea</p><h2>Fleet, stewardship and best practices.</h2></div><nav class="seafood-switcher__links" aria-label="More from the sea">{"".join(stewardship)}</nav></section></div></div>'''
 
 def html_page(page):
     title=page.get("title") or short_title(page)
