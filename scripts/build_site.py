@@ -302,7 +302,8 @@ def page_hero(page, image=None, class_name="page-hero", lead=None):
     if page.get("slug")=="meet-our-team":
         image={"src":"/assets/images/asset-0416.webp","fallback":"","key":"","alt":"Fleet Fisheries team at work"}
     elif page.get("slug")=="quality-assurance":
-        image=page_image("quality-assurance",contains="scallops-in-blue-gloved-hands") or image
+        quality_image=page_image("quality-assurance",contains="scallops-in-blue-gloved-hands")
+        image={"src":image_fallback(quality_image),"fallback":"","key":"","alt":"Sea scallops inspected by Fleet Fisheries quality staff"}
     media=(f'<div class="page-hero__media">{image_tag(image,"page-hero__image",loading="eager",width=1800)}</div>' if image and image.get("src") else '<div class="page-hero__media page-hero__media--abstract" aria-hidden="true"></div>')
     title_slug=page.get("slug","")
     group="Our Fleet" if title_slug.startswith("fv-") or title_slug in ("our-fleet","list-of-all-fleet-vessels","vessel-jobs") else "Seafood" if title_slug in ("from-the-sea","our-products","sea-scallops","lobster","crab","fish","health-wellness") else "Quality & Sourcing" if title_slug in ("to-the-shore","certifications","fleet-facilities","quality-assurance","traceability","best-practices","sustainability") else "For Buyers" if title_slug in ("to-your-door","shipping","credit-application","company-directory","sales") else "Fleet Fisheries"
