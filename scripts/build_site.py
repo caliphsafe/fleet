@@ -272,7 +272,7 @@ def header_html(active_slug=""):
           </div>
         </div>''')
     return f'''<a class="skip-link" href="#main">Skip to content</a>
-      <div class="utility-bar"><div class="utility-bar__inner"><span>Over 30 years in business</span><span class="utility-bar__address">20 Blackmer Street · New Bedford, MA 02744</span><div class="utility-bar__actions"><a href="tel:+15089963742">Call (508) 996-3742</a><span>Fax (508) 996-3785</span><a href="mailto:info@fleetfisheries.com">Email Fleet Fisheries</a></div></div></div>
+      <div class="utility-bar"><div class="utility-bar__inner"><span class="utility-bar__address">20 Blackmer Street · New Bedford, MA 02744</span><div class="utility-bar__actions"><a href="tel:+15089963742">Call (508) 996-3742</a></div></div></div>
       <header class="site-header"><div class="site-header__inner">
         <a class="brand" href="/" aria-label="Fleet Fisheries home">{logo_img}</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
@@ -392,14 +392,19 @@ def block_html(block):
         return f'<div class="video-frame"><iframe src="{esc(src)}" title="{esc(title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>'
     return ""
 
-def render_blocks(page, skip_hero=None, skip_lead=True, skip_first_heading=True):
+def render_blocks(page, skip_hero=None, skip_lead=True, skip_first_heading=True, image_limit=6):
     blocks=page.get("blocks",[])
     first_heading=True; first_para=skip_lead; hero_key=image_key(skip_hero) if skip_hero else ""
-    output=[]; image_buffer=[]
+    output=[]; image_buffer=[]; image_count=0; overflow_images=[]
     def flush_images():
-        nonlocal image_buffer
+        nonlocal image_buffer, image_count
         if image_buffer:
-            output.append(render_photo_group(image_buffer))
+            available=max(0,image_limit-image_count)
+            visible=image_buffer[:available]
+            hidden=image_buffer[available:]
+            if visible: output.append(render_photo_group(visible))
+            image_count+=len(visible)
+            overflow_images.extend(hidden)
             image_buffer=[]
     for block in blocks:
         kind=block.get("type")
@@ -420,6 +425,8 @@ def render_blocks(page, skip_hero=None, skip_lead=True, skip_first_heading=True)
         html_block=block_html(block)
         if html_block: output.append(html_block)
     flush_images()
+    if overflow_images:
+        output.append(f'<details class="gallery-more"><summary>View {len(overflow_images)} more photos</summary>{render_photo_group(overflow_images)}</details>')
     return ''.join(output)
 
 def standard_page(page, extra="", hero=None, lead=None, after_intro=""):
@@ -432,7 +439,7 @@ def standard_page(page, extra="", hero=None, lead=None, after_intro=""):
 def home_html():
     home=BY_SLUG.get(""); h=home.get("images",[]) if home else []
     image=h[0] if h else page_image("our-fleet")
-    hero=f'''<section class="home-hero home-hero--static"><div class="home-hero__image">{image_tag(image,"home-hero__photo",loading="eager",width=2200)}</div><div class="home-hero__veil"></div><div class="home-hero__content"><p class="eyebrow">Fleet Fisheries Inc. · New Bedford, Massachusetts</p><h1>Seafood from our fleet.<br><em>Handled from source.</em></h1><p>Vertically integrated commercial fishing and wholesale seafood distribution, from the sea to the shore to your door.</p><div class="button-row">{link_html("Explore our seafood","/our-products/","button button--light")}{link_html("Talk to Sales","/sales/","button button--outline")}</div></div><a class="hero-scroll" href="#journey">Explore Fleet Fisheries <span aria-hidden="true">↓</span></a></section>'''
+    hero=f'''<section class="home-hero home-hero--static"><div class="home-hero__image">{image_tag(image,"home-hero__photo",loading="eager",width=2200)}</div><div class="home-hero__veil"></div><div class="home-hero__content"><p class="eyebrow">New Bedford, Massachusetts</p><h1>Seafood from our own fleet.</h1><p>Commercial fishing and wholesale seafood, handled from source.</p><div class="button-row">{link_html("Explore our seafood","/our-products/","button button--light")}{link_html("Talk to Sales","/sales/","button button--outline")}</div></div><a class="hero-scroll" href="#journey">Explore Fleet Fisheries <span aria-hidden="true">↓</span></a></section>'''
     step_cards=[
         ("01", "From the sea", "Our own fishing fleet harvests scallops, lobster, crab, and fish.", "/our-products/", page_image("our-fleet")),
         ("02", "To the shore", "Fleet Fisheries’ shore-side facilities are located in historic New Bedford, Massachusetts.", "/to-the-shore/", page_image("fleet-facilities")),
@@ -653,7 +660,8 @@ def render_people(page):
         details=''.join(f'<p>{detail_line(x)}</p>' for x in person["details"])
         cards.append(f'''<article class="person-card"><div class="person-card__photo">{image_tag(person['image'],"",loading="lazy",width=850)}</div><div class="person-card__content"><h2>{esc(person['name'])}</h2>{f'<p class="person-role">{esc(person["role"])}</p>' if person['role'] else ''}<div class="person-details">{details}</div></div></article>''')
     intro=page_hero(page,hero,lead=lead_text(page))
-    return f'''{breadcrumbs_html(page)}{intro}<div class="page-content"><div class="content-width">{f'<div class="people-grid">{"".join(cards)}</div>' if cards else render_blocks(page,skip_hero=hero)}</div></div>'''
+    team_tools='<div class="people-tools"><label for="people-search">Find a team member</label><input id="people-search" type="search" placeholder="Search by name or role" autocomplete="off"><p class="people-result-count" aria-live="polite"></p></div>' if page.get("slug")=="meet-our-team" else ""
+    return f'''{breadcrumbs_html(page)}{intro}<div class="page-content"><div class="content-width">{team_tools}{f'<div class="people-grid">{"".join(cards)}</div>' if cards else render_blocks(page,skip_hero=hero)}</div></div>'''
 
 def video_cards(page):
     blocks=page.get("blocks",[]); cards=[]; last_title=""

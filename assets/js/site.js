@@ -139,6 +139,24 @@
     vesselFilters.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
     filterVessels();
   }));
+
+  const peopleSearch = document.querySelector('#people-search');
+  const peopleCards = [...document.querySelectorAll('.person-card')];
+  const peopleCount = document.querySelector('.people-result-count');
+  function filterPeople() {
+    if (!peopleCards.length) return;
+    const query = (peopleSearch?.value || '').trim().toLowerCase();
+    let shown = 0;
+    peopleCards.forEach((card) => {
+      const matches = !query || card.textContent.toLowerCase().includes(query);
+      card.hidden = !matches;
+      if (matches) shown += 1;
+    });
+    if (peopleCount) peopleCount.textContent = `${shown} ${shown === 1 ? 'team member' : 'team members'}`;
+  }
+  peopleSearch?.addEventListener('input', filterPeople);
+  filterPeople();
+
   function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
   }
