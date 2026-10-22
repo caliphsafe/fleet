@@ -590,7 +590,10 @@ def render_vessel(page):
     hero_html=(f'<div class="vessel-profile-hero__media">{image_tag(hero,"vessel-profile-hero__image",loading="eager",width=2200)}</div>' if hero else '<div class="vessel-profile-hero__media vessel-profile-hero__media--empty"></div>')
     identity=f'<div class="vessel-profile-hero__number"><span>Vessel number</span><strong>{esc(registry)}</strong></div>' if registry else ""
     spec_html=''.join(f'<div class="vessel-spec-item"><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k,v in spec.items())
-    gallery=render_image_grid(images[1:],"photo-grid photo-grid--vessel-profile")
+    gallery_images=images[1:]
+    gallery=render_image_grid(gallery_images[:6],"photo-grid photo-grid--vessel-profile")
+    if len(gallery_images)>6:
+        gallery+=f'<details class="gallery-more"><summary>View all {len(gallery_images)} vessel photographs</summary>{render_image_grid(gallery_images[6:],"photo-grid photo-grid--vessel-profile")}</details>'
     return f'''{breadcrumbs_html(page)}<section class="vessel-profile-hero">{hero_html}<div class="vessel-profile-hero__shade"></div><div class="vessel-profile-hero__content"><p class="eyebrow">{esc(category)}</p><h1>{esc(title)}</h1><p class="vessel-profile-hero__lead">{esc(label)}</p>{identity}{link_html("View all vessels","/our-fleet/","button button--light")}</div></section>
       <section class="vessel-specs-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">Fleet vessel profile</p><h2>Vessel specifications</h2></div>{f'<dl class="vessel-spec-grid">{spec_html}</dl>' if spec_html else '<p>Vessel specifications are not available on the public source page.</p>'}</div></section>
       {f'<section class="vessel-gallery-section"><div class="content-width"><div class="vessel-section-heading"><p class="eyebrow">On the water</p><h2>{esc(title)} photographs</h2></div>{gallery}</div></section>' if gallery else ''}
